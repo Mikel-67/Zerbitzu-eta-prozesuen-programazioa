@@ -1,0 +1,15 @@
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\bin\Debug\net8.0\Hariak 4.exe
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\bin\Debug\net8.0\Hariak 4.deps.json
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\bin\Debug\net8.0\Hariak 4.runtimeconfig.json
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\bin\Debug\net8.0\Hariak 4.dll
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\bin\Debug\net8.0\Hariak 4.pdb
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\obj\Debug\net8.0\Hariak 4.GeneratedMSBuildEditorConfig.editorconfig
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\obj\Debug\net8.0\Hariak 4.AssemblyInfoInputs.cache
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\obj\Debug\net8.0\Hariak 4.AssemblyInfo.cs
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\obj\Debug\net8.0\Hariak 4.csproj.CoreCompileInputs.cache
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\obj\Debug\net8.0\Hariak 4.sourcelink.json
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\obj\Debug\net8.0\Hariak 4.dll
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\obj\Debug\net8.0\refint\Hariak 4.dll
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\obj\Debug\net8.0\Hariak 4.pdb
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\obj\Debug\net8.0\Hariak 4.genruntimeconfig.cache
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\Hariak 4\Hariak 4\Hariak 4\obj\Debug\net8.0\ref\Hariak 4.dll
