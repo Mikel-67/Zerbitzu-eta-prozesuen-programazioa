@@ -1,0 +1,15 @@
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\bin\Debug\net8.0\MusServer.exe
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\bin\Debug\net8.0\MusServer.deps.json
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\bin\Debug\net8.0\MusServer.runtimeconfig.json
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\bin\Debug\net8.0\MusServer.dll
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\bin\Debug\net8.0\MusServer.pdb
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\obj\Debug\net8.0\MusServer.GeneratedMSBuildEditorConfig.editorconfig
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\obj\Debug\net8.0\MusServer.AssemblyInfoInputs.cache
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\obj\Debug\net8.0\MusServer.AssemblyInfo.cs
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\obj\Debug\net8.0\MusServer.csproj.CoreCompileInputs.cache
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\obj\Debug\net8.0\MusServer.sourcelink.json
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\obj\Debug\net8.0\MusServer.dll
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\obj\Debug\net8.0\refint\MusServer.dll
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\obj\Debug\net8.0\MusServer.pdb
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\obj\Debug\net8.0\MusServer.genruntimeconfig.cache
+D:\Zerbitzu-eta-prozesuen-programazioa\Zerbitzu-eta-prozesuen-programazioa\MusServer\MusServer\MusServer\obj\Debug\net8.0\ref\MusServer.dll

@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Zerbitzu-eta-prozesuen-programazioa\\Zerbitzu-eta-prozesuen-programazioa\\Sare Komunikazioak\\Argazkiak\\Azterketarako\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9B9A8D7D-8AD8-4885-ACDC-7BE82933CD70}|Azterketarako\\Zerbitzaria.csproj|d:\\zerbitzu-eta-prozesuen-programazioa\\zerbitzu-eta-prozesuen-programazioa\\sare komunikazioak\\argazkiak\\azterketarako\\azterketarako\\zerbitzaria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9B9A8D7D-8AD8-4885-ACDC-7BE82933CD70}|Azterketarako\\Zerbitzaria.csproj|solutionrelative:azterketarako\\zerbitzaria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F3140C4-915B-4F56-9850-12ECC405D698}|Bezeroa\\Bezeroa.csproj|d:\\zerbitzu-eta-prozesuen-programazioa\\zerbitzu-eta-prozesuen-programazioa\\sare komunikazioak\\argazkiak\\azterketarako\\bezeroa\\bezeroa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F3140C4-915B-4F56-9850-12ECC405D698}|Bezeroa\\Bezeroa.csproj|solutionrelative:bezeroa\\bezeroa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Bezeroa.cs",
+              "DocumentMoniker": "D:\\Zerbitzu-eta-prozesuen-programazioa\\Zerbitzu-eta-prozesuen-programazioa\\Sare Komunikazioak\\Argazkiak\\Azterketarako\\Bezeroa\\Bezeroa.cs",
+              "RelativeDocumentMoniker": "Bezeroa\\Bezeroa.cs",
+              "ToolTip": "D:\\Zerbitzu-eta-prozesuen-programazioa\\Zerbitzu-eta-prozesuen-programazioa\\Sare Komunikazioak\\Argazkiak\\Azterketarako\\Bezeroa\\Bezeroa.cs",
+              "RelativeToolTip": "Bezeroa\\Bezeroa.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAABWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T08:12:28.947Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Zerbitzaria.cs",
+              "DocumentMoniker": "D:\\Zerbitzu-eta-prozesuen-programazioa\\Zerbitzu-eta-prozesuen-programazioa\\Sare Komunikazioak\\Argazkiak\\Azterketarako\\Azterketarako\\Zerbitzaria.cs",
+              "RelativeDocumentMoniker": "Azterketarako\\Zerbitzaria.cs",
+              "ToolTip": "D:\\Zerbitzu-eta-prozesuen-programazioa\\Zerbitzu-eta-prozesuen-programazioa\\Sare Komunikazioak\\Argazkiak\\Azterketarako\\Azterketarako\\Zerbitzaria.cs",
+              "RelativeToolTip": "Azterketarako\\Zerbitzaria.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAowBYAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-20T08:02:05.222Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

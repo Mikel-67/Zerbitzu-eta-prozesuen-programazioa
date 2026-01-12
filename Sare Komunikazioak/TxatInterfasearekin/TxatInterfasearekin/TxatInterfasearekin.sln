@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zerbitzaria", "TxatInterfasearekin\Zerbitzaria.csproj", "{1DBA6119-B7C4-4943-AB9C-4192A215664D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bezeroa", "Bezeroa\Bezeroa.csproj", "{3353FA56-9CBC-4ADF-A05D-A1E4E292507D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1DBA6119-B7C4-4943-AB9C-4192A215664D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DBA6119-B7C4-4943-AB9C-4192A215664D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DBA6119-B7C4-4943-AB9C-4192A215664D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DBA6119-B7C4-4943-AB9C-4192A215664D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3353FA56-9CBC-4ADF-A05D-A1E4E292507D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3353FA56-9CBC-4ADF-A05D-A1E4E292507D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3353FA56-9CBC-4ADF-A05D-A1E4E292507D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3353FA56-9CBC-4ADF-A05D-A1E4E292507D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {24511E9B-EDA2-4059-802D-9E3D1866BE2B}
+	EndGlobalSection
+EndGlobal
