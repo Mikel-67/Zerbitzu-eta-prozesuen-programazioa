@@ -223,11 +223,11 @@ namespace Zerbitzaria
         }
         private static string DeskarteakItxaron(Bezeroak b)
         {
-            string line;
+            string line = "";
             do
             {
-                line = b.PlayerReader.ReadLine();
-                Console.WriteLine(line);
+                line = line + b.PlayerReader.ReadLine();
+                //Console.WriteLine(line);
             } while (string.IsNullOrEmpty(line));
             return line;
         }
