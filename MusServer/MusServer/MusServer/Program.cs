@@ -154,6 +154,11 @@ namespace Zerbitzaria
                                                 string lehenEtsaiDeskarte = lehenEtsai.PlayerReader.ReadLine();
                                                 string bigarrenEtsaiDeskarte = bigarrenEtsai.PlayerReader.ReadLine();
 
+                                                Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} deskartatu du: {jokalariDeskarte}");
+                                                Console.WriteLine($"Jokalari {taldekidea.PlayerZnb} deskartatu du: {taldekideaDeskarte}");
+                                                Console.WriteLine($"Jokalari {lehenEtsai.PlayerZnb} deskartatu du: {lehenEtsaiDeskarte}");
+                                                Console.WriteLine($"Jokalari {bigarrenEtsai.PlayerZnb} deskartatu du: {bigarrenEtsaiDeskarte}");
+
                                                 int jokalariKop = DeskarteKudeaketa(jokalariDeskarte, jokalaria);
                                                 int taldekideaKop = DeskarteKudeaketa(taldekideaDeskarte, taldekidea);
                                                 int lehenEtsaiKop = DeskarteKudeaketa(lehenEtsaiDeskarte, lehenEtsai);
