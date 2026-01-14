@@ -131,7 +131,6 @@ namespace Zerbitzaria
 
                                         // Avisar que es su turno
                                         besteBezeroa.PlayerWriter.WriteLine("TURN");
-                                        besteBezeroa.PlayerWriter.Flush();
 
                                         string etsaiErabakia = besteBezeroa.PlayerReader.ReadLine();
                                         Console.WriteLine($"Jokalari {besteBezeroa.PlayerZnb} erabakia: {etsaiErabakia}");
@@ -145,14 +144,13 @@ namespace Zerbitzaria
                                                 foreach (var b in bezeroLista)
                                                 {
                                                     b.PlayerWriter.WriteLine("ALL_MUS");
-                                                    b.PlayerWriter.Flush();
                                                 }
 
                                                 // Leer descartes de cada jugador
-                                                string jokalariDeskarte = jokalaria.PlayerReader.ReadLine();
-                                                string taldekideaDeskarte = taldekidea.PlayerReader.ReadLine();
-                                                string lehenEtsaiDeskarte = lehenEtsai.PlayerReader.ReadLine();
-                                                string bigarrenEtsaiDeskarte = bigarrenEtsai.PlayerReader.ReadLine();
+                                                string jokalariDeskarte = DeskarteakItxaron(jokalaria);
+                                                string taldekideaDeskarte = DeskarteakItxaron(taldekidea);
+                                                string lehenEtsaiDeskarte = DeskarteakItxaron(lehenEtsai);
+                                                string bigarrenEtsaiDeskarte = DeskarteakItxaron(bigarrenEtsai);
 
                                                 Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} deskartatu du: {jokalariDeskarte}");
                                                 Console.WriteLine($"Jokalari {taldekidea.PlayerZnb} deskartatu du: {taldekideaDeskarte}");
@@ -222,6 +220,15 @@ namespace Zerbitzaria
                     }
                 }
             }
+        }
+        private static string DeskarteakItxaron(Bezeroak b)
+        {
+            string line;
+            do
+            {
+                line = b.PlayerReader.ReadLine();
+            } while (string.IsNullOrEmpty(line));
+            return line;
         }
 
         public static int DeskarteKudeaketa(string deskarteString, Bezeroak jokalaria)
