@@ -227,7 +227,7 @@ namespace Zerbitzaria
             do
             {
                 line = line + b.PlayerReader.ReadLine();
-                //Console.WriteLine(line);
+                Console.WriteLine("linea: "+line);
             } while (string.IsNullOrEmpty(line));
             return line;
         }
