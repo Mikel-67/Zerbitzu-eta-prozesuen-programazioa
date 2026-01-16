@@ -180,6 +180,8 @@ namespace Zerbitzaria
 
             while (true)
             {
+                jokalaria.PlayerWriter.WriteLine("GRANDES");
+                jokalaria.PlayerWriter.Flush();
                 string e1 = jokalaria.PlayerReader.ReadLine();
                 Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} erabakia: {e1}");
                 if (ProcesarErabakia(e1, 1, ref totala, ref azkenEnvido,
@@ -187,6 +189,8 @@ namespace Zerbitzaria
                     ref talde2PasoKop, ref talde2EnvidoKop,
                     jokalaria, taldekidea, etsai1, etsai2,taldekidea)) return;
 
+                etsai1.PlayerWriter.WriteLine("GRANDES");
+                etsai1.PlayerWriter.Flush();
                 string e2 = etsai1.PlayerReader.ReadLine();
                 Console.WriteLine($"Jokalari {etsai1.PlayerZnb} erabakia: {e2}");
                 if (ProcesarErabakia(e2, 2, ref totala, ref azkenEnvido,
@@ -194,6 +198,8 @@ namespace Zerbitzaria
                     ref talde2PasoKop, ref talde2EnvidoKop,
                     jokalaria, taldekidea, etsai1, etsai2, etsai2)) return;
 
+                taldekidea.PlayerWriter.WriteLine("GRANDES");
+                taldekidea.PlayerWriter.Flush();
                 string e3 = taldekidea.PlayerReader.ReadLine();
                 Console.WriteLine($"Jokalari {taldekidea.PlayerZnb} erabakia: {e3}");
                 if (ProcesarErabakia(e3, 1, ref totala, ref azkenEnvido,
@@ -201,6 +207,8 @@ namespace Zerbitzaria
                     ref talde2PasoKop, ref talde2EnvidoKop,
                     jokalaria, taldekidea, etsai1, etsai2, jokalaria)) return;
 
+                etsai2.PlayerWriter.WriteLine("GRANDES");
+                etsai2.PlayerWriter.Flush();
                 string e4 = etsai2.PlayerReader.ReadLine();
                 Console.WriteLine($"Jokalari {etsai2.PlayerZnb} erabakia: {e4}");
                 if (ProcesarErabakia(e4, 2, ref totala, ref azkenEnvido,
