@@ -154,7 +154,20 @@ namespace Zerbitzaria
                     string lehenEtsaiDeskarte = DeskarteakItxaron(lehenEtsai);
                     string bigarrenEtsaiDeskarte = DeskarteakItxaron(bigarrenEtsai);
 
-                    // Aquí iría el resto de tu lógica de DeskarteKudeaketa y musBanatu...
+                    Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} deskartatu du: {jokalariDeskarte}");
+                    Console.WriteLine($"Jokalari {taldekidea.PlayerZnb} deskartatu du: {taldekideaDeskarte}");
+                    Console.WriteLine($"Jokalari {lehenEtsai.PlayerZnb} deskartatu du: {lehenEtsaiDeskarte}");
+                    Console.WriteLine($"Jokalari {bigarrenEtsai.PlayerZnb} deskartatu du: {bigarrenEtsaiDeskarte}");
+
+                    int jokalariKop = DeskarteKudeaketa(jokalariDeskarte, jokalaria);
+                    int taldekideaKop = DeskarteKudeaketa(taldekideaDeskarte, taldekidea);
+                    int lehenEtsaiKop = DeskarteKudeaketa(lehenEtsaiDeskarte, lehenEtsai);
+                    int bigarrenEtsaiKop = DeskarteKudeaketa(bigarrenEtsaiDeskarte, bigarrenEtsai);
+
+                    musBanatu(jokalaria, jokalariKop);
+                    musBanatu(taldekidea, taldekideaKop);
+                    musBanatu(lehenEtsai, lehenEtsaiKop);
+                    musBanatu(bigarrenEtsai, bigarrenEtsaiKop);
                 }
             }
             // Mus amaitu da, orain Grandes jolasten da
