@@ -313,6 +313,8 @@ namespace Zerbitzaria
                     }
                     else if (azkenEnvido != 0)
                     {
+                        bereTaldekide.PlayerWriter.WriteLine("GRANDES");
+                        bereTaldekide.PlayerWriter.Flush();
                         string bereTaldekideErantzuna = bereTaldekide.PlayerReader.ReadLine();
                         Console.WriteLine($"Taldekidearen erabakia: {bereTaldekide.PlayerZnb} erabakia: {bereTaldekideErantzuna}");
                         return ProcesarErabakia(bereTaldekideErantzuna, 2, ref totala, ref azkenEnvido,
