@@ -275,8 +275,14 @@ namespace Zerbitzaria
                         int ezkerra1 = talde2Puntuak / 5;
                         int ezkerra2 = (talde2Puntuak % 5) / 2;
 
+                        Console.WriteLine(ezkerra1);
+                        Console.WriteLine(ezkerra2);
+
                         int eskuina1 = talde1Puntuak / 5;
                         int eskuina2 = (talde1Puntuak % 5) / 2;
+
+                        Console.WriteLine(eskuina1);
+                        Console.WriteLine(eskuina2);
 
                         foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
                         {
@@ -313,8 +319,14 @@ namespace Zerbitzaria
                         int ezkerra1 = talde1Puntuak / 5;
                         int ezkerra2 = (talde1Puntuak % 5) / 2;
 
+                        Console.WriteLine(ezkerra1);
+                        Console.WriteLine(ezkerra2);
+
                         int eskuina1 = talde2Puntuak / 5;
                         int eskuina2 = (talde2Puntuak % 5) / 2;
+
+                        Console.WriteLine(eskuina1);
+                        Console.WriteLine(eskuina2);
 
                         foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
                         {
