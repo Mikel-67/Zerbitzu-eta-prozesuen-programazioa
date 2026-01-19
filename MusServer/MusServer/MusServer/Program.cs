@@ -279,11 +279,15 @@ namespace Zerbitzaria
                             talde2Puntuak += 1;
                         }
 
-                            int ezkerra1 = talde2Puntuak / 5;
+                        Console.WriteLine($"Talde 1 puntuazioa: {talde1Puntuak}");
+
+                        int ezkerra1 = talde2Puntuak / 5;
                         int ezkerra2 = (talde2Puntuak % 5) / 2;
 
                         Console.WriteLine(ezkerra1);
                         Console.WriteLine(ezkerra2);
+
+                        Console.WriteLine($"Talde 2 puntuazioa: {talde2Puntuak}");
 
                         int eskuina1 = talde1Puntuak / 5;
                         int eskuina2 = (talde1Puntuak % 5) / 2;
@@ -331,11 +335,15 @@ namespace Zerbitzaria
                             talde1Puntuak += 1;
                         }
 
+                        Console.WriteLine($"Talde 1 puntuazioa: {talde1Puntuak}");
+
                         int ezkerra1 = talde1Puntuak / 5;
                         int ezkerra2 = (talde1Puntuak % 5) / 2;
 
                         Console.WriteLine(ezkerra1);
                         Console.WriteLine(ezkerra2);
+
+                        Console.WriteLine($"Talde 2 puntuazioa: {talde2Puntuak}");
 
                         int eskuina1 = talde2Puntuak / 5;
                         int eskuina2 = (talde2Puntuak % 5) / 2;
