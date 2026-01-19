@@ -282,7 +282,10 @@ namespace Zerbitzaria
                         Console.WriteLine($"Talde 1 puntuazioa: {talde1Puntuak}");
 
                         int ezkerra1 = talde2Puntuak / 5;
-                        int ezkerra2 = (talde2Puntuak % 5) / 2;
+
+                        float ezkerra2Float = talde2Puntuak / 5;
+
+                        int ezkerra2 = (int) ((ezkerra2Float * 10) % 10) / 2;
 
                         Console.WriteLine(ezkerra1);
                         Console.WriteLine(ezkerra2);
@@ -290,7 +293,9 @@ namespace Zerbitzaria
                         Console.WriteLine($"Talde 2 puntuazioa: {talde2Puntuak}");
 
                         int eskuina1 = talde1Puntuak / 5;
-                        int eskuina2 = (talde1Puntuak % 5) / 2;
+                        float eskuina2Float = talde2Puntuak / 5;
+
+                        int eskuina2 = (int)((ezkerra2Float * 10) % 10) / 2;
 
                         Console.WriteLine(eskuina1);
                         Console.WriteLine(eskuina2);
@@ -338,7 +343,9 @@ namespace Zerbitzaria
                         Console.WriteLine($"Talde 1 puntuazioa: {talde1Puntuak}");
 
                         int ezkerra1 = talde1Puntuak / 5;
-                        int ezkerra2 = (talde1Puntuak % 5) / 2;
+                        float ezkerra2Float = talde2Puntuak / 5;
+
+                        int ezkerra2 = (int)((ezkerra2Float * 10) % 10) / 2;
 
                         Console.WriteLine(ezkerra1);
                         Console.WriteLine(ezkerra2);
@@ -346,7 +353,9 @@ namespace Zerbitzaria
                         Console.WriteLine($"Talde 2 puntuazioa: {talde2Puntuak}");
 
                         int eskuina1 = talde2Puntuak / 5;
-                        int eskuina2 = (talde2Puntuak % 5) / 2;
+                        float eskuina2Float = talde2Puntuak / 5;
+
+                        int eskuina2 = (int)((ezkerra2Float * 10) % 10) / 2;
 
                         Console.WriteLine(eskuina1);
                         Console.WriteLine(eskuina2);
