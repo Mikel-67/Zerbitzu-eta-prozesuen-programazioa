@@ -270,9 +270,16 @@ namespace Zerbitzaria
                     if (talde1PasoKop == 2)
                     {
                         Console.WriteLine("Talde 1 paso bi aldiz. Grandes amaitu da.");
-                        talde2Puntuak += talde1EnvidoKop > 0 ? totala - azkenEnvido : 1;
+                        if (totala != azkenEnvido)
+                        {
+                            talde2Puntuak += talde1EnvidoKop > 0 ? totala - azkenEnvido : 1;
+                        }
+                        else
+                        {
+                            talde2Puntuak += 1;
+                        }
 
-                        int ezkerra1 = talde2Puntuak / 5;
+                            int ezkerra1 = talde2Puntuak / 5;
                         int ezkerra2 = (talde2Puntuak % 5) / 2;
 
                         Console.WriteLine(ezkerra1);
@@ -314,7 +321,15 @@ namespace Zerbitzaria
                     if (talde2PasoKop == 2)
                     {
                         Console.WriteLine("Talde 2 paso bi aldiz. Grandes amaitu da.");
-                        talde1Puntuak += talde2EnvidoKop > 0 ? totala - azkenEnvido : 1;
+
+                        if (totala != azkenEnvido)
+                        {
+                            talde1Puntuak += talde2EnvidoKop > 0 ? totala - azkenEnvido : 1;
+                        }
+                        else
+                        {
+                            talde1Puntuak += 1;
+                        }
 
                         int ezkerra1 = talde1Puntuak / 5;
                         int ezkerra2 = (talde1Puntuak % 5) / 2;
@@ -334,10 +349,12 @@ namespace Zerbitzaria
                             b.PlayerWriter.Flush();
 
                             b.PlayerWriter.WriteLine(eskuina1);
+                            b.PlayerWriter.Flush();
                             b.PlayerWriter.WriteLine(eskuina2);
                             b.PlayerWriter.Flush();
 
                             b.PlayerWriter.WriteLine(ezkerra1);
+                            b.PlayerWriter.Flush();
                             b.PlayerWriter.WriteLine(ezkerra2);
                             b.PlayerWriter.Flush();
                         }
