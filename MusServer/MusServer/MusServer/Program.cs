@@ -309,6 +309,26 @@ namespace Zerbitzaria
                     {
                         Console.WriteLine("Talde 2 paso bi aldiz. Grandes amaitu da.");
                         talde1Puntuak += talde2EnvidoKop > 0 ? totala - azkenEnvido : 1;
+
+                        int ezkerra1 = talde1Puntuak / 5;
+                        int ezkerra2 = (talde1Puntuak % 5) / 2;
+
+                        int eskuina1 = talde2Puntuak / 5;
+                        int eskuina2 = (talde2Puntuak % 5) / 2;
+
+                        foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
+                        {
+                            b.PlayerWriter.WriteLine("PUNTUAKJASO");
+                            b.PlayerWriter.Flush();
+
+                            b.PlayerWriter.WriteLine(eskuina1);
+                            b.PlayerWriter.WriteLine(eskuina2);
+                            b.PlayerWriter.Flush();
+
+                            b.PlayerWriter.WriteLine(ezkerra1);
+                            b.PlayerWriter.WriteLine(ezkerra2);
+                            b.PlayerWriter.Flush();
+                        }
                         return true;
                     }
                     else if (azkenEnvido != 0)
