@@ -200,7 +200,7 @@ namespace Zerbitzaria
                 if (ProcesarErabakia(e1, 1, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
-                    jokalaria, taldekidea, etsai1, etsai2,taldekidea)) return;
+                    jokalaria, taldekidea, etsai1, etsai2,taldekidea)) break;
 
                 etsai1.PlayerWriter.WriteLine("GRANDES");
                 etsai1.PlayerWriter.Flush();
@@ -209,7 +209,7 @@ namespace Zerbitzaria
                 if (ProcesarErabakia(e2, 2, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
-                    jokalaria, taldekidea, etsai1, etsai2, etsai2)) return;
+                    jokalaria, taldekidea, etsai1, etsai2, etsai2)) break;
 
                 taldekidea.PlayerWriter.WriteLine("GRANDES");
                 taldekidea.PlayerWriter.Flush();
@@ -218,7 +218,7 @@ namespace Zerbitzaria
                 if (ProcesarErabakia(e3, 1, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
-                    jokalaria, taldekidea, etsai1, etsai2, jokalaria)) return;
+                    jokalaria, taldekidea, etsai1, etsai2, jokalaria)) break;
 
                 etsai2.PlayerWriter.WriteLine("GRANDES");
                 etsai2.PlayerWriter.Flush();
@@ -227,8 +227,9 @@ namespace Zerbitzaria
                 if (ProcesarErabakia(e4, 2, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
-                    jokalaria, taldekidea, etsai1, etsai2, etsai1)) return;
+                    jokalaria, taldekidea, etsai1, etsai2, etsai1)) break;
             }
+            Console.WriteLine("GRANDES amaitu da.");
         }
 
         static bool ProcesarErabakia(
@@ -262,6 +263,26 @@ namespace Zerbitzaria
                     {
                         Console.WriteLine("Talde 1 paso bi aldiz. Grandes amaitu da.");
                         talde2Puntuak += talde1EnvidoKop > 0 ? totala - azkenEnvido : 1;
+
+                        int ezkerra1 = talde2Puntuak / 5;
+                        int ezkerra2 = (talde2Puntuak % 5) / 2;
+
+                        int eskuina1 = talde1Puntuak / 5;
+                        int eskuina2 = (talde1Puntuak % 5) / 2;
+
+                        foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
+                        {
+                            b.PlayerWriter.WriteLine("PUNTUAKJASO");
+                            b.PlayerWriter.Flush();
+
+                            b.PlayerWriter.WriteLine(eskuina1);
+                            b.PlayerWriter.WriteLine(eskuina2);
+                            b.PlayerWriter.Flush();
+
+                            b.PlayerWriter.WriteLine(ezkerra1);
+                            b.PlayerWriter.WriteLine(ezkerra2);
+                            b.PlayerWriter.Flush();
+                        }
                         return true;
                     }else if (azkenEnvido != 0)
                     {
