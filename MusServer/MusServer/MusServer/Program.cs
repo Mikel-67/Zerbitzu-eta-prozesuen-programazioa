@@ -138,6 +138,10 @@ namespace Zerbitzaria
                     {
                         etsaiMus++;
                     }
+                    else
+                    {
+                        break;
+                    }
                 }
 
                 if (etsaiMus == 2)
@@ -168,6 +172,10 @@ namespace Zerbitzaria
                     musBanatu(taldekidea, taldekideaKop);
                     musBanatu(lehenEtsai, lehenEtsaiKop);
                     musBanatu(bigarrenEtsai, bigarrenEtsaiKop);
+                }
+                else
+                {
+                    break;
                 }
             }
             // Mus amaitu da, orain Grandes jolasten da
