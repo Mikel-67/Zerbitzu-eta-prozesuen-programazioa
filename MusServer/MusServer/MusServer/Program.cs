@@ -15,8 +15,9 @@ namespace Zerbitzaria
             private StreamWriter playerWriter;
             private StreamReader playerReader;
             private TcpClient client;
+            private int taldea;
 
-            public Bezeroak(int playerZnb, TcpClient client)
+            public Bezeroak(int playerZnb, TcpClient client, int taldea)
             {
                 this.playerZnb = playerZnb;
                 this.client = client;
@@ -24,6 +25,7 @@ namespace Zerbitzaria
                 stream = client.GetStream();
                 playerWriter = new StreamWriter(stream) { AutoFlush = true };
                 playerReader = new StreamReader(stream);
+                this.taldea = taldea;
             }
 
             public int PlayerZnb => playerZnb;
@@ -31,6 +33,7 @@ namespace Zerbitzaria
             public List<string> Eskua => eskua;
             public StreamWriter PlayerWriter => playerWriter;
             public StreamReader PlayerReader => playerReader;
+            public int Taldea => taldea;
         }
 
         private static List<Bezeroak> bezeroLista = new List<Bezeroak>();
@@ -56,13 +59,15 @@ namespace Zerbitzaria
                 TcpClient client = listener.AcceptTcpClient();
                 Console.WriteLine("Bezeroa konektatuta.");
 
+                int taldea = (bezeroak % 2) + 1;
                 Bezeroak bezeroaObj;
                 lock (lockObj)
                 {
-                    bezeroaObj = new Bezeroak(bezeroak, client);
+                    bezeroaObj = new Bezeroak(bezeroak, client, taldea);
                     bezeroak++;
                     bezeroLista.Add(bezeroaObj);
                     Console.WriteLine($"Jokalari {bezeroak}/4 konektatuta");
+                    Console.WriteLine($"Jokalari {bezeroaObj.PlayerZnb - 1} taldea: {bezeroaObj.Taldea}");
                 }
 
                 if (bezeroak == 4)
@@ -205,7 +210,7 @@ namespace Zerbitzaria
                 jokalaria.PlayerWriter.Flush();
                 string e1 = jokalaria.PlayerReader.ReadLine();
                 Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} erabakia: {e1}");
-                if (ProcesarErabakia(e1, 1, ref totala, ref azkenEnvido,
+                if (ProcesarErabakia(e1, jokalaria.Taldea, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
                     jokalaria, taldekidea, etsai1, etsai2,taldekidea)) break;
@@ -214,7 +219,7 @@ namespace Zerbitzaria
                 etsai1.PlayerWriter.Flush();
                 string e2 = etsai1.PlayerReader.ReadLine();
                 Console.WriteLine($"Jokalari {etsai1.PlayerZnb} erabakia: {e2}");
-                if (ProcesarErabakia(e2, 2, ref totala, ref azkenEnvido,
+                if (ProcesarErabakia(e2, etsai1.Taldea, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
                     jokalaria, taldekidea, etsai1, etsai2, etsai2)) break;
@@ -223,7 +228,7 @@ namespace Zerbitzaria
                 taldekidea.PlayerWriter.Flush();
                 string e3 = taldekidea.PlayerReader.ReadLine();
                 Console.WriteLine($"Jokalari {taldekidea.PlayerZnb} erabakia: {e3}");
-                if (ProcesarErabakia(e3, 1, ref totala, ref azkenEnvido,
+                if (ProcesarErabakia(e3, taldekidea.Taldea, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
                     jokalaria, taldekidea, etsai1, etsai2, jokalaria)) break;
@@ -232,7 +237,7 @@ namespace Zerbitzaria
                 etsai2.PlayerWriter.Flush();
                 string e4 = etsai2.PlayerReader.ReadLine();
                 Console.WriteLine($"Jokalari {etsai2.PlayerZnb} erabakia: {e4}");
-                if (ProcesarErabakia(e4, 2, ref totala, ref azkenEnvido,
+                if (ProcesarErabakia(e4, etsai2.Taldea, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
                     jokalaria, taldekidea, etsai1, etsai2, etsai1)) break;
