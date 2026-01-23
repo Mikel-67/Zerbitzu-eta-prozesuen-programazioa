@@ -67,7 +67,7 @@ namespace Zerbitzaria
                     bezeroak++;
                     bezeroLista.Add(bezeroaObj);
                     Console.WriteLine($"Jokalari {bezeroak}/4 konektatuta");
-                    Console.WriteLine($"Jokalari {bezeroaObj.PlayerZnb - 1} taldea: {bezeroaObj.Taldea}");
+                    Console.WriteLine($"Jokalari {bezeroaObj.PlayerZnb} taldea: {bezeroaObj.Taldea}");
                 }
 
                 if (bezeroak == 4)
