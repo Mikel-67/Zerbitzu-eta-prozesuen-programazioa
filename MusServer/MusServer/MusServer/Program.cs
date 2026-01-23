@@ -454,11 +454,13 @@ namespace Zerbitzaria
             {
                 Console.WriteLine("Talde 1 da irabazlea Grandes.");
                 talde1Puntuak += totala;
+                Console.WriteLine($"Talde 1 puntuazioa: {talde1Puntuak}");
             }
             else
             {
                 Console.WriteLine("Talde 2 da irabazlea Grandes.");
                 talde2Puntuak += totala;
+                Console.WriteLine($"Talde 2 puntuazioa: {talde2Puntuak}");
             }
         }
 
