@@ -116,7 +116,7 @@ namespace Zerbitzaria
             Bezeroak bigarrenEtsai = etsaiLista[1];
 
             Console.WriteLine($"Jokalaria: {jokalaria.PlayerZnb}, Taldekidea: {taldekidea.PlayerZnb}, Etsaienak: {lehenEtsai.PlayerZnb}, {bigarrenEtsai.PlayerZnb}");
-            while (talde1Puntuak < 40 || talde2Puntuak < 40)
+            while (talde1Puntuak < 40 && talde2Puntuak < 40)
             {
                 Console.WriteLine($"Talde 1 puntuazioa: {talde1Puntuak}, Talde 2 puntuazioa: {talde2Puntuak}");
 
@@ -197,6 +197,7 @@ namespace Zerbitzaria
                 {
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PUNTO");
                 }
+                countJuego = 0;
             }
             if (talde1Puntuak >= 40)
             {
@@ -695,6 +696,7 @@ namespace Zerbitzaria
                 {
                     case "PARES":
                         List<int> kartaNumJokalaria = kartakZenbakiraBihurtu(b);
+                        Console.WriteLine("Karta zenbakiak PARES: " + string.Join(", ", kartaNumJokalaria));
                         bool badaukaPares = kartaNumJokalaria.GroupBy(x => x)
                             .Any(g => g.Count() >= 2);
                         if (!badaukaPares)
@@ -709,6 +711,7 @@ namespace Zerbitzaria
                         }
                     case "JUEGO":
                         List<int> kartaNumJokalariaJuego = kartakZenbakiraBihurtu(b);
+                        Console.WriteLine("Karta zenbakiak JUEGO: " + string.Join(", ", kartaNumJokalariaJuego));
                         bool badaukaJuego = kartaNumJokalariaJuego.Sum() >= 31;
                         if (badaukaJuego)
                         {
