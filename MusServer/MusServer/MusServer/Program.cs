@@ -298,11 +298,46 @@ namespace Zerbitzaria
                                 totala = totala + calcularPuntosParesEquipo(new List<List<int>> {
                                     kartakZenbakiraBihurtu(etsai1),
                                     kartakZenbakiraBihurtu(etsai2) });
+                            }else if (jokua == "PUNTO")
+                            {
+                                totala++;
+                            }else if (jokua == "JUEGO")
+                            {
+                                totala = totala + calcularPuntosJuegoEquipo(new List<List<int>> {
+                                    kartakZenbakiraBihurtu(etsai1),
+                                    kartakZenbakiraBihurtu(etsai2) });
                             }
-                            talde2Puntuak += talde1EnvidoKop > 0 ? totala - azkenEnvido : 1;
+                                talde2Puntuak += talde1EnvidoKop > 0 ? totala - azkenEnvido : 1;
                         }
                         else
                         {
+                            if (jokua == "PARES")
+                            {
+                                totala = 0;
+                                totala = totala + calcularPuntosParesEquipo(new List<List<int>> {
+                                    kartakZenbakiraBihurtu(etsai1),
+                                    kartakZenbakiraBihurtu(etsai2) });
+                                talde2Puntuak += totala;
+                            }else if (jokua == "JUEGO")
+                            {
+                                totala = 0;
+                                totala = totala + calcularPuntosJuegoEquipo(new List<List<int>> {
+                                    kartakZenbakiraBihurtu(etsai1),
+                                    kartakZenbakiraBihurtu(etsai2) });
+                                talde2Puntuak += totala;
+                            }
+                            else
+                            {
+                                if (jokua == "PUNTO")
+                                {
+                                    talde2Puntuak += 2;
+                                }
+                                else
+                                {
+                                    talde2Puntuak += 1;
+                                }
+                            }
+
                             talde2Puntuak += 1;
                         }
 
@@ -360,12 +395,45 @@ namespace Zerbitzaria
                                 totala = totala + calcularPuntosParesEquipo(new List<List<int>> {
                                     kartakZenbakiraBihurtu(jokalaria),
                                     kartakZenbakiraBihurtu(taldekidea) });
+                            }else if (jokua == "PUNTO")
+                            {
+                                totala++;
+                            }else if (jokua == "JUEGO")
+                            {
+                                totala = totala + calcularPuntosJuegoEquipo(new List<List<int>> {
+                                    kartakZenbakiraBihurtu(jokalaria),
+                                    kartakZenbakiraBihurtu(taldekidea) });
                             }
-                            talde1Puntuak += talde2EnvidoKop > 0 ? totala - azkenEnvido : 1;
+                                talde1Puntuak += talde2EnvidoKop > 0 ? totala - azkenEnvido : 1;
                         }
                         else
                         {
-                            talde1Puntuak += 1;
+                            if (jokua == "PARES")
+                            {
+                                totala = 0;
+                                totala = totala + calcularPuntosParesEquipo(new List<List<int>> {
+                                    kartakZenbakiraBihurtu(jokalaria),
+                                    kartakZenbakiraBihurtu(taldekidea) });
+                                talde1Puntuak += totala;
+                            }else if (jokua == "JUEGO")
+                            {
+                                totala = 0;
+                                totala = totala + calcularPuntosJuegoEquipo(new List<List<int>> {
+                                    kartakZenbakiraBihurtu(jokalaria),
+                                    kartakZenbakiraBihurtu(taldekidea) });
+                                talde1Puntuak += totala;
+                            }
+                            else
+                            {
+                                if (jokua == "PUNTO")
+                                {
+                                    talde1Puntuak += 2;
+                                }
+                                else
+                                {
+                                    talde1Puntuak += 1;
+                                }
+                            }
                         }
 
                         int ezkerra1 = talde2Puntuak / 5;
@@ -542,6 +610,23 @@ namespace Zerbitzaria
 
             return puntos;
         }
+        static int calcularPuntosJuegoEquipo(List<List<int>> manosEquipo)
+        {
+            int puntos = 0;
+            foreach (var mano in manosEquipo)
+            {
+                int suma = mano.Sum();
+                if (suma == 31)
+                {
+                    puntos += 3;
+                }
+                else if (suma < 41 && suma > 31)
+                {
+                    puntos += 2;
+                }
+            }
+            return puntos;
+        }
 
         public static (int tipo, int v1, int v2) analizarPares(List<int> mano)
         {
@@ -582,6 +667,23 @@ namespace Zerbitzaria
             List<int> kartaNumEtsai1 = kartakZenbakiraBihurtu(etsai1);
             List<int> kartaNumEtsai2 = kartakZenbakiraBihurtu(etsai2);
 
+            //JUEGO edo PUNTO kasuan, balioak 10 baino handiagoak badira, 10 balio dute
+            if (jokua == "JUEGO" || jokua == "PUNTO")
+            {
+                kartaNumJokalaria = kartaNumJokalaria
+                    .Select(x => x > 10 ? 10 : x)
+                    .ToList();
+                kartaNumTaldekidea = kartaNumTaldekidea
+                    .Select(x => x > 10 ? 10 : x)
+                    .ToList();
+                kartaNumEtsai1 = kartaNumEtsai1
+                    .Select(x => x > 10 ? 10 : x)
+                    .ToList();
+                kartaNumEtsai2 = kartaNumEtsai2
+                    .Select(x => x > 10 ? 10 : x)
+                    .ToList();
+            }
+
             //Taldekien hartean konparatu
             List<int> talde1Irabazle = konparatuEskuak(kartaNumJokalaria, kartaNumTaldekidea, jokua) >= 0 ? kartaNumJokalaria : kartaNumTaldekidea;
             List<int> talde2Irabazle = konparatuEskuak(kartaNumEtsai1, kartaNumEtsai2, jokua) >= 0 ? kartaNumEtsai1 : kartaNumEtsai2;
@@ -594,6 +696,12 @@ namespace Zerbitzaria
                 if (jokua == "PARES")
                 {
                     totala = totala + calcularPuntosParesEquipo(new List<List<int>> { kartaNumJokalaria, kartaNumTaldekidea });
+                }else if (jokua == "JUEGO")
+                {
+                    totala = totala + calcularPuntosJuegoEquipo(new List<List<int>> { kartaNumJokalaria, kartaNumTaldekidea });
+                }else if (jokua == "PUNTO")
+                {
+                    totala++;
                 }
                 talde1Puntuak += totala;
                 Console.WriteLine($"Talde 1 puntuazioa: {talde1Puntuak}");
@@ -705,7 +813,7 @@ namespace Zerbitzaria
                         if (!badaukaPares)
                         {
                             Console.WriteLine($"Jokalari {b.PlayerZnb} ez dauka PARES.");
-                            return ("paso");
+                            return ("ezJuego");
                         }else
                         {
                             b.PlayerWriter.WriteLine("PARES");
@@ -714,6 +822,10 @@ namespace Zerbitzaria
                         }
                     case "JUEGO":
                         List<int> kartaNumJokalariaJuego = kartakZenbakiraBihurtu(b);
+                        // Zenbakia 10 baino gorakoa den kartak 10 balio du
+                        List<int> kartaNumJokalariaJuegoMod = kartaNumJokalariaJuego
+                            .Select(x => x > 10 ? 10 : x)
+                            .ToList();
                         Console.WriteLine("Karta zenbakiak JUEGO: " + string.Join(", ", kartaNumJokalariaJuego));
                         bool badaukaJuego = kartaNumJokalariaJuego.Sum() >= 31;
                         if (badaukaJuego)
