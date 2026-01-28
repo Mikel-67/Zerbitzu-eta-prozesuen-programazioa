@@ -484,7 +484,10 @@ namespace Zerbitzaria
 
             // Envido
             totala = kudeaketaPuntuak(erabakia, totala);
-            azkenEnvido = int.Parse(erabakia);
+            if (erabakia != "ezJuego")
+            {
+                azkenEnvido = int.Parse(erabakia);
+            }
 
             if (taldea == 1) talde1EnvidoKop++;
             else talde2EnvidoKop++;
