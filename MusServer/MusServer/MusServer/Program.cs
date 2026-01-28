@@ -443,8 +443,11 @@ namespace Zerbitzaria
         {
             if (Erabakia != "paso")
             {
-                int kantitatea = int.Parse(Erabakia);
-                totala += kantitatea;
+                if (Erabakia != "ezJuego")
+                {
+                    int kantitatea = int.Parse(Erabakia);
+                    totala += kantitatea;
+                }
             }
                 return totala;
         }
