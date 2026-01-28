@@ -43,6 +43,7 @@ namespace Zerbitzaria
         private static List<string> deskarteBaraja = new List<string>();
         private static int talde1Puntuak = 0;
         private static int talde2Puntuak = 0;
+        private static int countJuego = 0;
 
         public static void Main(string[] args)
         {
@@ -115,80 +116,96 @@ namespace Zerbitzaria
             Bezeroak bigarrenEtsai = etsaiLista[1];
 
             Console.WriteLine($"Jokalaria: {jokalaria.PlayerZnb}, Taldekidea: {taldekidea.PlayerZnb}, Etsaienak: {lehenEtsai.PlayerZnb}, {bigarrenEtsai.PlayerZnb}");
-
-            while (true)
+            while (talde1Puntuak < 40 || talde2Puntuak < 40)
             {
-                jokalaria.PlayerWriter.WriteLine("TURN");
-                jokalaria.PlayerWriter.Flush();
-                string erabakia = jokalaria.PlayerReader.ReadLine();
-                Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} erabakia: {erabakia}");
+                Console.WriteLine($"Talde 1 puntuazioa: {talde1Puntuak}, Talde 2 puntuazioa: {talde2Puntuak}");
 
-                if (erabakia != "mus") break;
-
-                taldekidea.PlayerWriter.WriteLine("TURN");
-                taldekidea.PlayerWriter.Flush();
-                string taldekideErabakia = taldekidea.PlayerReader.ReadLine();
-                Console.WriteLine($"Taldekidearen erabakia: {taldekidea.PlayerZnb} erabakia: {taldekideErabakia}");
-
-                if (taldekideErabakia != "mus") break;
-
-                int etsaiMus = 0;
-                foreach (var etsai in new Bezeroak[] { lehenEtsai, bigarrenEtsai })
+                while (true)
                 {
-                    etsai.PlayerWriter.WriteLine("TURN");
-                    etsai.PlayerWriter.Flush();
-                    string etsaiErabakia = etsai.PlayerReader.ReadLine();
-                    Console.WriteLine($"Etsai {etsai.PlayerZnb} erabakia: {etsaiErabakia}");
+                    jokalaria.PlayerWriter.WriteLine("TURN");
+                    jokalaria.PlayerWriter.Flush();
+                    string erabakia = jokalaria.PlayerReader.ReadLine();
+                    Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} erabakia: {erabakia}");
 
-                    if (etsaiErabakia == "mus")
+                    if (erabakia != "mus") break;
+
+                    taldekidea.PlayerWriter.WriteLine("TURN");
+                    taldekidea.PlayerWriter.Flush();
+                    string taldekideErabakia = taldekidea.PlayerReader.ReadLine();
+                    Console.WriteLine($"Taldekidearen erabakia: {taldekidea.PlayerZnb} erabakia: {taldekideErabakia}");
+
+                    if (taldekideErabakia != "mus") break;
+
+                    int etsaiMus = 0;
+                    foreach (var etsai in new Bezeroak[] { lehenEtsai, bigarrenEtsai })
                     {
-                        etsaiMus++;
+                        etsai.PlayerWriter.WriteLine("TURN");
+                        etsai.PlayerWriter.Flush();
+                        string etsaiErabakia = etsai.PlayerReader.ReadLine();
+                        Console.WriteLine($"Etsai {etsai.PlayerZnb} erabakia: {etsaiErabakia}");
+
+                        if (etsaiErabakia == "mus")
+                        {
+                            etsaiMus++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    if (etsaiMus == 2)
+                    {
+                        Console.WriteLine("Dena mus! Kartak berriro banatzen dira.");
+                        foreach (var b in bezeroLista)
+                        {
+                            b.PlayerWriter.WriteLine("ALL_MUS");
+                        }
+
+                        // Leer descartes de cada jugador
+                        string jokalariDeskarte = DeskarteakItxaron(jokalaria);
+                        string taldekideaDeskarte = DeskarteakItxaron(taldekidea);
+                        string lehenEtsaiDeskarte = DeskarteakItxaron(lehenEtsai);
+                        string bigarrenEtsaiDeskarte = DeskarteakItxaron(bigarrenEtsai);
+
+                        Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} deskartatu du: {jokalariDeskarte}");
+                        Console.WriteLine($"Jokalari {taldekidea.PlayerZnb} deskartatu du: {taldekideaDeskarte}");
+                        Console.WriteLine($"Jokalari {lehenEtsai.PlayerZnb} deskartatu du: {lehenEtsaiDeskarte}");
+                        Console.WriteLine($"Jokalari {bigarrenEtsai.PlayerZnb} deskartatu du: {bigarrenEtsaiDeskarte}");
+
+                        int jokalariKop = DeskarteKudeaketa(jokalariDeskarte, jokalaria);
+                        int taldekideaKop = DeskarteKudeaketa(taldekideaDeskarte, taldekidea);
+                        int lehenEtsaiKop = DeskarteKudeaketa(lehenEtsaiDeskarte, lehenEtsai);
+                        int bigarrenEtsaiKop = DeskarteKudeaketa(bigarrenEtsaiDeskarte, bigarrenEtsai);
+
+                        musBanatu(jokalaria, jokalariKop);
+                        musBanatu(taldekidea, taldekideaKop);
+                        musBanatu(lehenEtsai, lehenEtsaiKop);
+                        musBanatu(bigarrenEtsai, bigarrenEtsaiKop);
                     }
                     else
                     {
                         break;
                     }
                 }
-
-                if (etsaiMus == 2)
+                // Mus amaitu da, orain Grandes jolasten da
+                EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "GRANDES");
+                EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PEQUEÑAS");
+                EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PARES");
+                EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "JUEGO");
+                if (countJuego == 4)
                 {
-                    Console.WriteLine("Dena mus! Kartak berriro banatzen dira.");
-                    foreach (var b in bezeroLista)
-                    {
-                        b.PlayerWriter.WriteLine("ALL_MUS");
-                    }
-
-                    // Leer descartes de cada jugador
-                    string jokalariDeskarte = DeskarteakItxaron(jokalaria);
-                    string taldekideaDeskarte = DeskarteakItxaron(taldekidea);
-                    string lehenEtsaiDeskarte = DeskarteakItxaron(lehenEtsai);
-                    string bigarrenEtsaiDeskarte = DeskarteakItxaron(bigarrenEtsai);
-
-                    Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} deskartatu du: {jokalariDeskarte}");
-                    Console.WriteLine($"Jokalari {taldekidea.PlayerZnb} deskartatu du: {taldekideaDeskarte}");
-                    Console.WriteLine($"Jokalari {lehenEtsai.PlayerZnb} deskartatu du: {lehenEtsaiDeskarte}");
-                    Console.WriteLine($"Jokalari {bigarrenEtsai.PlayerZnb} deskartatu du: {bigarrenEtsaiDeskarte}");
-
-                    int jokalariKop = DeskarteKudeaketa(jokalariDeskarte, jokalaria);
-                    int taldekideaKop = DeskarteKudeaketa(taldekideaDeskarte, taldekidea);
-                    int lehenEtsaiKop = DeskarteKudeaketa(lehenEtsaiDeskarte, lehenEtsai);
-                    int bigarrenEtsaiKop = DeskarteKudeaketa(bigarrenEtsaiDeskarte, bigarrenEtsai);
-
-                    musBanatu(jokalaria, jokalariKop);
-                    musBanatu(taldekidea, taldekideaKop);
-                    musBanatu(lehenEtsai, lehenEtsaiKop);
-                    musBanatu(bigarrenEtsai, bigarrenEtsaiKop);
-                }
-                else
-                {
-                    break;
+                    EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PUNTO");
                 }
             }
-            // Mus amaitu da, orain Grandes jolasten da
-            EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai,"GRANDES");
-            EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai,"PEQUEÑAS");
-            EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai,"PARES");
-            EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "JUEGO");
+            if (talde1Puntuak >= 40)
+            {
+                Console.WriteLine("Talde 1 irabazi du partida!");
+            }
+            else
+            {
+                Console.WriteLine("Talde 2 irabazi du partida!");
+            }
         }
 
 
@@ -239,7 +256,7 @@ namespace Zerbitzaria
                     ref talde2PasoKop, ref talde2EnvidoKop,
                     jokalaria, taldekidea, etsai1, etsai2, etsai1, jokua)) break;
             }
-            Console.WriteLine("GRANDES amaitu da.");
+            Console.WriteLine(jokua + " amaitu da.");
         }
 
         static bool ProcesarErabakia(
@@ -260,18 +277,7 @@ namespace Zerbitzaria
         {
             if (erabakia == "quiero")
             {
-                switch (jokua)
-                {
-                    case "GRANDES":
-                        irabazleaRonda(jokalaria, taldekidea, etsai1, etsai2, totala, jokua);
-                        break;
-                    case "PEQUEÑAS":
-                        irabazleaRonda(jokalaria, taldekidea, etsai1, etsai2, totala, jokua);
-                        break;
-                    case "PARES":
-                        irabazleaRonda(jokalaria, taldekidea, etsai1, etsai2, totala, jokua);
-                        break;
-                }
+                irabazleaRonda(jokalaria, taldekidea, etsai1, etsai2, totala, jokua);
                 totala = 0;
                 return true;
             }
@@ -286,6 +292,12 @@ namespace Zerbitzaria
                         Console.WriteLine("Talde 1 paso bi aldiz");
                         if (totala != azkenEnvido)
                         {
+                            if (jokua == "PARES")
+                            {
+                                totala = totala + calcularPuntosParesEquipo(new List<List<int>> {
+                                    kartakZenbakiraBihurtu(etsai1),
+                                    kartakZenbakiraBihurtu(etsai2) });
+                            }
                             talde2Puntuak += talde1EnvidoKop > 0 ? totala - azkenEnvido : 1;
                         }
                         else
@@ -327,7 +339,7 @@ namespace Zerbitzaria
                         bereTaldekide.PlayerWriter.Flush();
                         string bereTaldekideErantzuna = bereTaldekide.PlayerReader.ReadLine();
                         Console.WriteLine($"Taldekidearen erabakia: {bereTaldekide.PlayerZnb} erabakia: {bereTaldekideErantzuna}");
-                        return ProcesarErabakia(bereTaldekideErantzuna, 1, ref totala, ref azkenEnvido,
+                        return ProcesarErabakia(bereTaldekideErantzuna, bereTaldekide.Taldea, ref totala, ref azkenEnvido,
                             ref talde1PasoKop, ref talde1EnvidoKop,
                             ref talde2PasoKop, ref talde2EnvidoKop,
                             jokalaria, taldekidea, etsai1, etsai2, null, jokua);
@@ -342,6 +354,12 @@ namespace Zerbitzaria
 
                         if (totala != azkenEnvido)
                         {
+                            if (jokua == "PARES")
+                            {
+                                totala = totala + calcularPuntosParesEquipo(new List<List<int>> {
+                                    kartakZenbakiraBihurtu(jokalaria),
+                                    kartakZenbakiraBihurtu(taldekidea) });
+                            }
                             talde1Puntuak += talde2EnvidoKop > 0 ? totala - azkenEnvido : 1;
                         }
                         else
@@ -386,7 +404,7 @@ namespace Zerbitzaria
                         bereTaldekide.PlayerWriter.Flush();
                         string bereTaldekideErantzuna = bereTaldekide.PlayerReader.ReadLine();
                         Console.WriteLine($"Taldekidearen erabakia: {bereTaldekide.PlayerZnb} erabakia: {bereTaldekideErantzuna}");
-                        return ProcesarErabakia(bereTaldekideErantzuna, 2, ref totala, ref azkenEnvido,
+                        return ProcesarErabakia(bereTaldekideErantzuna, bereTaldekide.Taldea, ref totala, ref azkenEnvido,
                             ref talde1PasoKop, ref talde1EnvidoKop,
                             ref talde2PasoKop, ref talde2EnvidoKop,
                             jokalaria, taldekidea, etsai1, etsai2, null, jokua);
@@ -441,6 +459,7 @@ namespace Zerbitzaria
                         if (a[i] > b[i]) return -1;
                     }
                     break;
+
                 case "GRANDES":
                     for (int i = 0; i < 4; i++)
                     {
@@ -448,6 +467,7 @@ namespace Zerbitzaria
                         if (a[i] < b[i]) return -1;
                     }
                     break;
+
                 case "PARES":
                     var pa = analizarPares(a);
                     var pb = analizarPares(b);
@@ -462,10 +482,61 @@ namespace Zerbitzaria
                         return pa.v2 > pb.v2 ? 1 : -1;
 
                     break;
+
                 case "JUEGO":
+                    int sumaA = a.Sum();
+                    int sumaB = b.Sum();
+
+                    int APuntu = juegoKudeaketa(sumaA);
+                    int BPuntu = juegoKudeaketa(sumaB);
+
+                    if (APuntu > BPuntu) return 1;
+                    if (APuntu < BPuntu) return -1;
+                    break;
+
+                case "PUNTO":
+                    int sumA = a.Sum();
+                    int sumB = b.Sum();
+
+                    if (sumA > sumB) return 1;
+                    if (sumA < sumB) return -1;
+                    return 0;
+
+                default:
                     break;
             }
             return 0;
+        }
+        static int juegoKudeaketa(int suma)
+        {
+            if (suma < 31) return -1; // no hay juego
+
+            if (suma == 31) return 100;  // mejor
+            if (suma == 32) return 90;   // segundo mejor
+
+            return suma; // 33–40: cuanto más alto, mejor
+        }
+        static int puntosPorTipo(int tipo)
+        {
+            return tipo switch
+            {
+                1 => 1, // par
+                2 => 2, // medias
+                3 => 3, // duples
+                _ => 0  // sin pares
+            };
+        }
+        static int calcularPuntosParesEquipo(List<List<int>> manosEquipo)
+        {
+            int puntos = 0;
+
+            foreach (var mano in manosEquipo)
+            {
+                var resultado = analizarPares(mano);
+                puntos += puntosPorTipo(resultado.tipo);
+            }
+
+            return puntos;
         }
 
         public static (int tipo, int v1, int v2) analizarPares(List<int> mano)
@@ -485,7 +556,7 @@ namespace Zerbitzaria
                     .OrderByDescending(x => x)
                     .ToList();
 
-                return (3, pares[0], pares[1]); // par alto, par bajo
+                return (3, pares[0], pares[1]);
             }
 
             // Medias
@@ -515,13 +586,21 @@ namespace Zerbitzaria
 
             if (konparaketa >= 0)
             {
-                Console.WriteLine("Talde 1 da irabazlea" + jokua);
+                Console.WriteLine("Talde 1 da irabazlea " + jokua);
+                if (jokua == "PARES")
+                {
+                    totala = totala + calcularPuntosParesEquipo(new List<List<int>> { kartaNumJokalaria, kartaNumTaldekidea });
+                }
                 talde1Puntuak += totala;
                 Console.WriteLine($"Talde 1 puntuazioa: {talde1Puntuak}");
             }
             else
             {
                 Console.WriteLine("Talde 2 da irabazlea" + jokua);
+                if (jokua == "PARES")
+                {
+                    totala = totala + calcularPuntosParesEquipo(new List<List<int>> { kartaNumEtsai1, kartaNumEtsai2 });
+                }
                 talde2Puntuak += totala;
                 Console.WriteLine($"Talde 2 puntuazioa: {talde2Puntuak}");
             }
@@ -604,7 +683,7 @@ namespace Zerbitzaria
         }
         public static string jokalariarenErabakia(Bezeroak b, string jokua)
         {
-            if (jokua == "GRANDES" || jokua == "PEQUEÑAS")
+            if (jokua == "GRANDES" || jokua == "PEQUEÑAS" || jokua == "PUNTO")
             {
                 b.PlayerWriter.WriteLine(jokua);
                 b.PlayerWriter.Flush();
@@ -629,9 +708,20 @@ namespace Zerbitzaria
                             return (b.PlayerReader.ReadLine());
                         }
                     case "JUEGO":
+                        List<int> kartaNumJokalariaJuego = kartakZenbakiraBihurtu(b);
+                        bool badaukaJuego = kartaNumJokalariaJuego.Sum() >= 31;
+                        if (badaukaJuego)
+                        {
                             b.PlayerWriter.WriteLine("JUEGO");
+                            b.PlayerWriter.Flush();
+                            return (b.PlayerReader.ReadLine());
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Jokalari {b.PlayerZnb} ez dauka JUEGO.");
+                            countJuego++;
                             return ("paso");
-
+                        }
                     default:
                         return ("paso");
                 }
