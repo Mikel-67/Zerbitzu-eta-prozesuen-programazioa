@@ -723,7 +723,7 @@ namespace Zerbitzaria
                         {
                             Console.WriteLine($"Jokalari {b.PlayerZnb} ez dauka JUEGO.");
                             countJuego++;
-                            return ("paso");
+                            return ("ezJuego");
                         }
                     default:
                         return ("paso");
