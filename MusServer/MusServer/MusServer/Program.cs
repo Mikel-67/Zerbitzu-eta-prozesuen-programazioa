@@ -973,6 +973,7 @@ namespace Zerbitzaria
         {
             if (jokua == "GRANDES" || jokua == "PEQUEÑAS" || jokua == "PUNTO")
             {
+                Console.WriteLine("Sartu da");
                 b.PlayerWriter.WriteLine(jokua);
                 b.PlayerWriter.Flush();
                 return (b.PlayerReader.ReadLine());
