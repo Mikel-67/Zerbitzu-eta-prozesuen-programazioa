@@ -196,9 +196,9 @@ namespace Zerbitzaria
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "JUEGO");
                 if (countJuego == 4)
                 {
+                    countJuego = 0;
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PUNTO");
                 }
-                countJuego = 0;
             }
             if (talde1Puntuak >= 40)
             {
