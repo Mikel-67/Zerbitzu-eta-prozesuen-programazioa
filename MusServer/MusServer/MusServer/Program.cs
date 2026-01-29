@@ -260,12 +260,14 @@ namespace Zerbitzaria
                 {
                     if (talde1Jokua && talde2Jokua)
                     {
+                        Console.WriteLine("Talde biak jokua dauka");
                         jokalaria.PlayerWriter.WriteLine(jokua);
                         jokalaria.PlayerWriter.Flush();
                         e1 = jokalaria.PlayerReader.ReadLine();
                     }
                     else
                     {
+                        Console.WriteLine("Talde bakarra jokua dauka");
                         e1 = "quiero";
                     }
                 }
@@ -285,12 +287,14 @@ namespace Zerbitzaria
                 {
                     if (talde1Jokua && talde2Jokua)
                     {
+                        Console.WriteLine("Talde biak jokua dauka");
                         etsai1.PlayerWriter.WriteLine(jokua);
                         etsai1.PlayerWriter.Flush();
                         e2 = etsai1.PlayerReader.ReadLine();
                     }
                     else
                     {
+                        Console.WriteLine("Talde bakarra jokua dauka");
                         e2 = "quiero";
                     }
                 }
@@ -310,12 +314,14 @@ namespace Zerbitzaria
                 {
                     if (talde1Jokua && talde2Jokua)
                     {
+                        Console.WriteLine("Bi taldeek jokua daukate");
                         taldekidea.PlayerWriter.WriteLine(jokua);
                         taldekidea.PlayerWriter.Flush();
                         e3 = taldekidea.PlayerReader.ReadLine();
                     }
                     else
                     {
+                        Console.WriteLine("Talde bakarra jokua dauka");
                         e3 = "quiero";
                     }
                 }
@@ -335,12 +341,14 @@ namespace Zerbitzaria
                 {
                     if (talde1Jokua && talde2Jokua)
                     {
+                        Console.WriteLine("Bi taldeek jokua daukate");
                         etsai2.PlayerWriter.WriteLine(jokua);
                         etsai2.PlayerWriter.Flush();
                         e4 = etsai2.PlayerReader.ReadLine();
                     }
                     else
                     {
+                        Console.WriteLine("Talde bakarra jokua dauka");
                         e4 = "quiero";
                     }
                 }
