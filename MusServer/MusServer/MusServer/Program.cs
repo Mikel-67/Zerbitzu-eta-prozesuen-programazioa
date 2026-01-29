@@ -125,6 +125,10 @@ namespace Zerbitzaria
                     jokalaria.PlayerWriter.WriteLine("TURN");
                     jokalaria.PlayerWriter.Flush();
                     string erabakia = jokalaria.PlayerReader.ReadLine();
+                    while (erabakia == "")
+                    {
+                        erabakia = jokalaria.PlayerReader.ReadLine();
+                    }
                     Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} erabakia: {erabakia}");
 
                     if (erabakia != "mus") break;
