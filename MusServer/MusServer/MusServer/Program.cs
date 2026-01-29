@@ -1010,7 +1010,7 @@ namespace Zerbitzaria
                             .Select(x => x > 10 ? 10 : x)
                             .ToList();
                         Console.WriteLine("Karta zenbakiak JUEGO: " + string.Join(", ", kartaNumJokalariaJuego));
-                        bool badaukaJuego = kartaNumJokalariaJuego.Sum() >= 31;
+                        bool badaukaJuego = kartaNumJokalariaJuegoMod.Sum() >= 31;
                         if (badaukaJuego)
                         {
                             return ("jokuaDaukat");
