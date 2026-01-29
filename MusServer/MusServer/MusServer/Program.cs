@@ -232,6 +232,8 @@ namespace Zerbitzaria
                 string e2 = null;
                 string e3 = null;
                 string e4 = null;
+
+                // ✅ Para PARES y JUEGO, primero verificar quién tiene juego válido
                 if (jokua == "PARES" || jokua == "JUEGO")
                 {
                     e1 = jokalariarenErabakia(jokalaria, jokua);
@@ -239,16 +241,19 @@ namespace Zerbitzaria
                     {
                         talde1Jokua = true;
                     }
+
                     e2 = jokalariarenErabakia(etsai1, jokua);
                     if (e2 == "jokuaDaukat")
                     {
                         talde2Jokua = true;
                     }
+
                     e3 = jokalariarenErabakia(taldekidea, jokua);
                     if (e3 == "jokuaDaukat")
                     {
                         talde1Jokua = true;
                     }
+
                     e4 = jokalariarenErabakia(etsai2, jokua);
                     if (e4 == "jokuaDaukat")
                     {
@@ -256,46 +261,75 @@ namespace Zerbitzaria
                     }
                 }
 
-                if (e1 == "jokuaDaukat")
+                // ✅ JOKALARIA - Solo preguntar si tiene juego o si es GRANDES/PEQUEÑAS/PUNTO
+                if (jokua == "PARES" || jokua == "JUEGO")
                 {
-                    if (talde1Jokua && talde2Jokua)
+                    if (e1 == "ezJuego")
                     {
-                        Console.WriteLine("Talde biak jokua dauka");
-                        jokalaria.PlayerWriter.WriteLine(jokua);
-                        jokalaria.PlayerWriter.Flush();
-                        e1 = jokalaria.PlayerReader.ReadLine();
+                        // No hacer nada, ya sabemos que no tiene
+                        if (ProcesarErabakia(e1, jokalaria.Taldea, ref totala, ref azkenEnvido,
+                            ref talde1PasoKop, ref talde1EnvidoKop,
+                            ref talde2PasoKop, ref talde2EnvidoKop,
+                            jokalaria, taldekidea, etsai1, etsai2, taldekidea, jokua)) break;
+
+                        goto CheckEtsai1; // Saltar al siguiente jugador
                     }
-                    else
+                    else if (e1 == "jokuaDaukat")
                     {
-                        Console.WriteLine("Talde bakarra jokua dauka");
-                        e1 = "quiero";
+                        if (talde1Jokua && talde2Jokua)
+                        {
+                            Console.WriteLine("Talde biak jokua dauka");
+                            jokalaria.PlayerWriter.WriteLine(jokua);
+                            jokalaria.PlayerWriter.Flush();
+                            e1 = jokalaria.PlayerReader.ReadLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Talde bakarra jokua dauka");
+                            e1 = "quiero";
+                        }
                     }
                 }
                 else
                 {
+                    // Para GRANDES, PEQUEÑAS, PUNTO - preguntar siempre
                     e1 = jokalariarenErabakia(jokalaria, jokua);
                 }
 
                 Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} erabakia: {e1}");
 
                 if (ProcesarErabakia(e1, jokalaria.Taldea, ref totala, ref azkenEnvido,
-                ref talde1PasoKop, ref talde1EnvidoKop,
-                ref talde2PasoKop, ref talde2EnvidoKop,
-                jokalaria, taldekidea, etsai1, etsai2, taldekidea, jokua)) break;
+                    ref talde1PasoKop, ref talde1EnvidoKop,
+                    ref talde2PasoKop, ref talde2EnvidoKop,
+                    jokalaria, taldekidea, etsai1, etsai2, taldekidea, jokua)) break;
 
-                if (e2 == "jokuaDaukat")
+                CheckEtsai1:
+                // ✅ ETSAI1
+                if (jokua == "PARES" || jokua == "JUEGO")
                 {
-                    if (talde1Jokua && talde2Jokua)
+                    if (e2 == "ezJuego")
                     {
-                        Console.WriteLine("Talde biak jokua dauka");
-                        etsai1.PlayerWriter.WriteLine(jokua);
-                        etsai1.PlayerWriter.Flush();
-                        e2 = etsai1.PlayerReader.ReadLine();
+                        if (ProcesarErabakia(e2, etsai1.Taldea, ref totala, ref azkenEnvido,
+                            ref talde1PasoKop, ref talde1EnvidoKop,
+                            ref talde2PasoKop, ref talde2EnvidoKop,
+                            jokalaria, taldekidea, etsai1, etsai2, etsai2, jokua)) break;
+
+                        goto CheckTaldekidea;
                     }
-                    else
+                    else if (e2 == "jokuaDaukat")
                     {
-                        Console.WriteLine("Talde bakarra jokua dauka");
-                        e2 = "quiero";
+                        if (talde1Jokua && talde2Jokua)
+                        {
+                            Console.WriteLine("Talde biak jokua dauka");
+                            etsai1.PlayerWriter.WriteLine(jokua);
+                            etsai1.PlayerWriter.Flush();
+                            e2 = etsai1.PlayerReader.ReadLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Talde bakarra jokua dauka");
+                            e2 = "quiero";
+                        }
                     }
                 }
                 else
@@ -308,21 +342,35 @@ namespace Zerbitzaria
                 if (ProcesarErabakia(e2, etsai1.Taldea, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
-                    jokalaria, taldekidea, etsai1, etsai2, etsai2,jokua)) break;
+                    jokalaria, taldekidea, etsai1, etsai2, etsai2, jokua)) break;
 
-                if (e3 == "jokuaDaukat")
+                CheckTaldekidea:
+                // ✅ TALDEKIDEA
+                if (jokua == "PARES" || jokua == "JUEGO")
                 {
-                    if (talde1Jokua && talde2Jokua)
+                    if (e3 == "ezJuego")
                     {
-                        Console.WriteLine("Bi taldeek jokua daukate");
-                        taldekidea.PlayerWriter.WriteLine(jokua);
-                        taldekidea.PlayerWriter.Flush();
-                        e3 = taldekidea.PlayerReader.ReadLine();
+                        if (ProcesarErabakia(e3, taldekidea.Taldea, ref totala, ref azkenEnvido,
+                            ref talde1PasoKop, ref talde1EnvidoKop,
+                            ref talde2PasoKop, ref talde2EnvidoKop,
+                            jokalaria, taldekidea, etsai1, etsai2, jokalaria, jokua)) break;
+
+                        goto CheckEtsai2;
                     }
-                    else
+                    else if (e3 == "jokuaDaukat")
                     {
-                        Console.WriteLine("Talde bakarra jokua dauka");
-                        e3 = "quiero";
+                        if (talde1Jokua && talde2Jokua)
+                        {
+                            Console.WriteLine("Bi taldeek jokua daukate");
+                            taldekidea.PlayerWriter.WriteLine(jokua);
+                            taldekidea.PlayerWriter.Flush();
+                            e3 = taldekidea.PlayerReader.ReadLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Talde bakarra jokua dauka");
+                            e3 = "quiero";
+                        }
                     }
                 }
                 else
@@ -337,19 +385,33 @@ namespace Zerbitzaria
                     ref talde2PasoKop, ref talde2EnvidoKop,
                     jokalaria, taldekidea, etsai1, etsai2, jokalaria, jokua)) break;
 
-                if (e4 == "jokuaDaukat")
+                CheckEtsai2:
+                // ✅ ETSAI2
+                if (jokua == "PARES" || jokua == "JUEGO")
                 {
-                    if (talde1Jokua && talde2Jokua)
+                    if (e4 == "ezJuego")
                     {
-                        Console.WriteLine("Bi taldeek jokua daukate");
-                        etsai2.PlayerWriter.WriteLine(jokua);
-                        etsai2.PlayerWriter.Flush();
-                        e4 = etsai2.PlayerReader.ReadLine();
+                        if (ProcesarErabakia(e4, etsai2.Taldea, ref totala, ref azkenEnvido,
+                            ref talde1PasoKop, ref talde1EnvidoKop,
+                            ref talde2PasoKop, ref talde2EnvidoKop,
+                            jokalaria, taldekidea, etsai1, etsai2, etsai1, jokua)) break;
+
+                        continue; // Volver al inicio del bucle
                     }
-                    else
+                    else if (e4 == "jokuaDaukat")
                     {
-                        Console.WriteLine("Talde bakarra jokua dauka");
-                        e4 = "quiero";
+                        if (talde1Jokua && talde2Jokua)
+                        {
+                            Console.WriteLine("Bi taldeek jokua daukate");
+                            etsai2.PlayerWriter.WriteLine(jokua);
+                            etsai2.PlayerWriter.Flush();
+                            e4 = etsai2.PlayerReader.ReadLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Talde bakarra jokua dauka");
+                            e4 = "quiero";
+                        }
                     }
                 }
                 else
@@ -364,6 +426,7 @@ namespace Zerbitzaria
                     ref talde2PasoKop, ref talde2EnvidoKop,
                     jokalaria, taldekidea, etsai1, etsai2, etsai1, jokua)) break;
             }
+
             Console.WriteLine(jokua + " amaitu da.");
         }
 
