@@ -457,6 +457,7 @@ namespace Zerbitzaria
         {
             if (erabakia == "ordago")
             {
+                azkenEnvido = 9999999;
                 totala = 9999999;
                 // Bidali ordago mezua jokalari guztiei
                 foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
