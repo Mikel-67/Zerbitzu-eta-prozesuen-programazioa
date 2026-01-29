@@ -199,6 +199,7 @@ namespace Zerbitzaria
                     countJuego = 0;
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PUNTO");
                 }
+                countJuego = 0;
             }
             if (talde1Puntuak >= 40)
             {
@@ -507,8 +508,6 @@ namespace Zerbitzaria
                                     talde2Puntuak += 1;
                                 }
                             }
-
-                            talde2Puntuak += 1;
                         }
 
                         int ezkerra1 = talde1Puntuak / 5;
