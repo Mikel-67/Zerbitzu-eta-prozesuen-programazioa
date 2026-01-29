@@ -190,17 +190,23 @@ namespace Zerbitzaria
                 }
                 // Mus amaitu da, orain Grandes jolasten da
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "GRANDES");
+                if (talde1Puntuak >= 99999 || talde2Puntuak >= 99999) goto CheckBukatu;
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PEQUEÑAS");
+                if (talde1Puntuak >= 99999 || talde2Puntuak >= 99999) goto CheckBukatu;
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PARES");
+                if (talde1Puntuak >= 99999 || talde2Puntuak >= 99999) goto CheckBukatu;
                 countJuego = 0;
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "JUEGO");
+                if (talde1Puntuak >= 99999 || talde2Puntuak >= 99999) goto CheckBukatu;
                 if (countJuego == 4)
                 {
                     countJuego = 0;
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PUNTO");
                 }
                 countJuego = 0;
+                goto CheckBukatu;
             }
+        CheckBukatu:
             if (talde1Puntuak >= 40)
             {
                 Console.WriteLine("Talde 1 irabazi du partida!");
@@ -229,6 +235,7 @@ namespace Zerbitzaria
 
             while (true)
             {
+                bool lehenEnvido = false;
                 string e1 = null;
                 string e2 = null;
                 string e3 = null;
@@ -271,7 +278,7 @@ namespace Zerbitzaria
                         if (ProcesarErabakia(e1, jokalaria.Taldea, ref totala, ref azkenEnvido,
                             ref talde1PasoKop, ref talde1EnvidoKop,
                             ref talde2PasoKop, ref talde2EnvidoKop,
-                            jokalaria, taldekidea, etsai1, etsai2, taldekidea, jokua)) break;
+                            jokalaria, taldekidea, etsai1, etsai2, taldekidea, jokua, lehenEnvido)) break;
 
                         goto CheckEtsai1; // Saltar al siguiente jugador
                     }
@@ -302,7 +309,7 @@ namespace Zerbitzaria
                 if (ProcesarErabakia(e1, jokalaria.Taldea, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
-                    jokalaria, taldekidea, etsai1, etsai2, taldekidea, jokua)) break;
+                    jokalaria, taldekidea, etsai1, etsai2, taldekidea, jokua, lehenEnvido)) break;
 
                 CheckEtsai1:
                 // ✅ ETSAI1
@@ -313,7 +320,7 @@ namespace Zerbitzaria
                         if (ProcesarErabakia(e2, etsai1.Taldea, ref totala, ref azkenEnvido,
                             ref talde1PasoKop, ref talde1EnvidoKop,
                             ref talde2PasoKop, ref talde2EnvidoKop,
-                            jokalaria, taldekidea, etsai1, etsai2, etsai2, jokua)) break;
+                            jokalaria, taldekidea, etsai1, etsai2, etsai2, jokua, lehenEnvido)) break;
 
                         goto CheckTaldekidea;
                     }
@@ -343,7 +350,7 @@ namespace Zerbitzaria
                 if (ProcesarErabakia(e2, etsai1.Taldea, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
-                    jokalaria, taldekidea, etsai1, etsai2, etsai2, jokua)) break;
+                    jokalaria, taldekidea, etsai1, etsai2, etsai2, jokua, lehenEnvido)) break;
 
                 CheckTaldekidea:
                 // ✅ TALDEKIDEA
@@ -354,7 +361,7 @@ namespace Zerbitzaria
                         if (ProcesarErabakia(e3, taldekidea.Taldea, ref totala, ref azkenEnvido,
                             ref talde1PasoKop, ref talde1EnvidoKop,
                             ref talde2PasoKop, ref talde2EnvidoKop,
-                            jokalaria, taldekidea, etsai1, etsai2, jokalaria, jokua)) break;
+                            jokalaria, taldekidea, etsai1, etsai2, jokalaria, jokua, lehenEnvido)) break;
 
                         goto CheckEtsai2;
                     }
@@ -384,7 +391,7 @@ namespace Zerbitzaria
                 if (ProcesarErabakia(e3, taldekidea.Taldea, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
-                    jokalaria, taldekidea, etsai1, etsai2, jokalaria, jokua)) break;
+                    jokalaria, taldekidea, etsai1, etsai2, jokalaria, jokua, lehenEnvido)) break;
 
                 CheckEtsai2:
                 // ✅ ETSAI2
@@ -395,7 +402,7 @@ namespace Zerbitzaria
                         if (ProcesarErabakia(e4, etsai2.Taldea, ref totala, ref azkenEnvido,
                             ref talde1PasoKop, ref talde1EnvidoKop,
                             ref talde2PasoKop, ref talde2EnvidoKop,
-                            jokalaria, taldekidea, etsai1, etsai2, etsai1, jokua)) break;
+                            jokalaria, taldekidea, etsai1, etsai2, etsai1, jokua, lehenEnvido)) break;
 
                         continue; // Volver al inicio del bucle
                     }
@@ -425,7 +432,7 @@ namespace Zerbitzaria
                 if (ProcesarErabakia(e4, etsai2.Taldea, ref totala, ref azkenEnvido,
                     ref talde1PasoKop, ref talde1EnvidoKop,
                     ref talde2PasoKop, ref talde2EnvidoKop,
-                    jokalaria, taldekidea, etsai1, etsai2, etsai1, jokua)) break;
+                    jokalaria, taldekidea, etsai1, etsai2, etsai1, jokua, lehenEnvido)) break;
             }
 
             Console.WriteLine(jokua + " amaitu da.");
@@ -445,8 +452,20 @@ namespace Zerbitzaria
             Bezeroak etsai1,
             Bezeroak etsai2,
             Bezeroak bereTaldekide,
-            string jokua)
+            string jokua,
+            bool lehenEnvido)
         {
+            if (erabakia == "ordago")
+            {
+                totala = 9999999;
+                // Bidali ordago mezua jokalari guztiei
+                foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
+                {
+                    b.PlayerWriter.WriteLine("ORDAGO");
+                    b.PlayerWriter.Flush();
+                }
+                return false;
+            }
             if (erabakia == "quiero")
             {
                 irabazleaRonda(jokalaria, taldekidea, etsai1, etsai2, totala, jokua);
@@ -547,7 +566,7 @@ namespace Zerbitzaria
                         return ProcesarErabakia(bereTaldekideErantzuna, bereTaldekide.Taldea, ref totala, ref azkenEnvido,
                             ref talde1PasoKop, ref talde1EnvidoKop,
                             ref talde2PasoKop, ref talde2EnvidoKop,
-                            jokalaria, taldekidea, etsai1, etsai2, null, jokua);
+                            jokalaria, taldekidea, etsai1, etsai2, null, jokua, lehenEnvido);
                     }
                 }
                 else
@@ -645,7 +664,7 @@ namespace Zerbitzaria
                         return ProcesarErabakia(bereTaldekideErantzuna, bereTaldekide.Taldea, ref totala, ref azkenEnvido,
                             ref talde1PasoKop, ref talde1EnvidoKop,
                             ref talde2PasoKop, ref talde2EnvidoKop,
-                            jokalaria, taldekidea, etsai1, etsai2, null, jokua);
+                            jokalaria, taldekidea, etsai1, etsai2, null, jokua, lehenEnvido);
                     }
                 }
                 return false;
@@ -656,6 +675,15 @@ namespace Zerbitzaria
             if (erabakia != "ezJuego")
             {
                 azkenEnvido = int.Parse(erabakia);
+                //Bidali ENVIDO mezua jokalari guztiei
+                if (!lehenEnvido)
+                {
+                    foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
+                    {
+                        b.PlayerWriter.WriteLine("ENVIDO");
+                        b.PlayerWriter.Flush();
+                    }
+                }
             }
 
             if (taldea == 1) talde1EnvidoKop++;
