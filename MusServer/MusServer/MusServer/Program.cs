@@ -121,10 +121,6 @@ namespace Zerbitzaria
                 StreamWriter writer = new StreamWriter(stream) { AutoFlush = true };
                 StreamReader reader = new StreamReader(stream);
 
-                // Preguntar tipo de sala
-                writer.WriteLine("TIPO_SALA");
-                writer.Flush();
-
                 string tipoSala = reader.ReadLine();
                 Console.WriteLine($"📩 Cliente eligió: {tipoSala}");
 
