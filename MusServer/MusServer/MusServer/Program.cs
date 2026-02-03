@@ -57,7 +57,7 @@ namespace Zerbitzaria
             public List<string> Eskua => eskua;
             public StreamWriter PlayerWriter => playerWriter;
             public StreamReader PlayerReader => playerReader;
-            public int Taldea => taldea;
+            public int Taldea { get => taldea; set => taldea = value; }
         }
         public class Pareja
         {
@@ -71,7 +71,6 @@ namespace Zerbitzaria
         }
         private static Dictionary<int, Partida> partidas = new Dictionary<int, Partida>();
         private static Dictionary<string, Partida> partidasPorCodigo = new Dictionary<string, Partida>();
-        private static Dictionary<int, Pareja> parejas = new Dictionary<int, Pareja>();
         private static Random random = new Random(); //Kodigoak sortzeko
         private static int nextPartidaId = 0;
         private static object partidasLock = new object();
@@ -91,35 +90,6 @@ namespace Zerbitzaria
                 }
 
                 return partida;
-            }
-        }
-        private static (Partida partida, bool esNueva) BuscarPartidaConEspacio(int espacioNecesario, Partida partidaPublicaActual)
-        {
-            lock (partidasLock)
-            {
-                // Verificar partida actual
-                if (partidaPublicaActual.Bezeroak + espacioNecesario <= 4)
-                {
-                    Console.WriteLine($"✅ Usando partida actual {partidaPublicaActual.PartidaId}");
-                    return (partidaPublicaActual, false);  // ✅ No es nueva
-                }
-
-                // Buscar otras partidas públicas
-                foreach (var partida in partidas.Values)
-                {
-                    if (!partida.EsPrivada &&
-                        partida.Bezeroak + espacioNecesario <= 4 &&
-                        partida != partidaPublicaActual)
-                    {
-                        Console.WriteLine($"✅ Encontrada partida {partida.PartidaId}");
-                        return (partida, false);  // ✅ No es nueva
-                    }
-                }
-
-                // Crear nueva partida
-                Console.WriteLine($"🆕 Creando nueva partida");
-                var nuevaPartida = CrearPartida();
-                return (nuevaPartida, true);  // ✅ Es nueva
             }
         }
         private static string GenerarCodigoUnico()
@@ -153,16 +123,21 @@ namespace Zerbitzaria
                 return null; // Kodea ez da existitzen
             }
         }
-        private static Pareja BuscarParejaCodigoa(int kodea, TcpClient client)
+        private static Partida BilatuPartidaById(int id)
         {
             lock (partidasLock)
             {
-                if (parejas.TryGetValue(kodea, out Pareja pareja))
+                foreach (var partida in partidas.Values)
                 {
-                    pareja.bezeroak.Add(new Bezeroak(nextPartidaId, client, 0));
-                    return pareja;
+                    if (partida.PartidaId == id)
+                    {
+                        if (partida.Bezeroak <= 2)
+                        {
+                            return partida;
+                        }
+                    }
                 }
-                return null; // Kodea ez da existitzen
+                return null;
             }
         }
         private static void ProcesarNuevoJugador(TcpClient client, ref Partida partidaPublicaActual)
@@ -187,7 +162,7 @@ namespace Zerbitzaria
                         {
                             partidaAsignada = partidaPublicaActual;
 
-                            int taldea = (partidaAsignada.Bezeroak % 2) + 1;
+                            int taldea = 0;
                             var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea);
                             partidaAsignada.BezeroLista.Add(bezeroaObj);
                             partidaAsignada.Bezeroak++;
@@ -200,6 +175,7 @@ namespace Zerbitzaria
                             if (partidaAsignada.Bezeroak == 4)
                             {
                                 Partida p = partidaAsignada;
+                                jokalarienTaldeakSortu(p);
                                 Task.Run(() => IniciarPartida(p));
                                 partidaPublicaActual = CrearPartida();
                             }
@@ -271,70 +247,34 @@ namespace Zerbitzaria
                         }
                         break;
 
-                    case "DUOS_SORTU":
-                        string codigoDuos = GenerarCodigoUnico();
-                        writer.WriteLine(codigoDuos);
-                        writer.Flush();
+                    case "ID_ESKATU":
+                        int ID = partidaPublicaActual.PartidaId;
 
-                        Pareja pareja = new Pareja(int.Parse(codigoDuos));
-                        pareja.bezeroak.Add(new Bezeroak(0, client, 0));
-                        parejas[int.Parse(codigoDuos)] = pareja;
+                        Partida partidaBerria = BilatuPartidaById(ID);
 
-                        Console.WriteLine($"👥 Pareja {codigoDuos} creada");
-                        break;
-                    case "DUOS_JOIN":
-                        writer.WriteLine("DUOS_JOIN");
-                        writer.Flush();
-
-                        string codigoJoin = reader.ReadLine();
-
+                        if (partidaBerria == null)
+                        {
+                            partidaBerria = CrearPartida();
+                        }
                         lock (partidasLock)
                         {
-                            if (parejas.TryGetValue(int.Parse(codigoJoin), out var parejaEncontrada))
+                            int taldea = 1;
+
+                            var bezeroaObj = new Bezeroak(partidaBerria.Bezeroak, client, taldea);
+                            partidaBerria.BezeroLista.Add(bezeroaObj);
+                            partidaBerria.Bezeroak++;
+
+                            writer.WriteLine("OK");
+                            writer.Flush();
+
+                            Console.WriteLine($"[Partida {partidaBerria.PartidaId} - PÚBLICA] Jokalari {partidaBerria.Bezeroak}/4");
+
+                            if (partidaBerria.Bezeroak == 4)
                             {
-                                if (parejaEncontrada.bezeroak.Count == 1)
-                                {
-                                    parejaEncontrada.bezeroak.Add(new Bezeroak(1, client, 0));
-
-                                    var (partidaDestino, esNueva) = BuscarPartidaConEspacio(2, partidaPublicaActual);
-
-                                    if (esNueva)
-                                    {
-                                        partidaPublicaActual = partidaDestino;
-                                    }
-
-                                    int equipoAsignado = (partidaDestino.Bezeroak == 0) ? 1 : 2;
-
-                                    foreach (var bezero in parejaEncontrada.bezeroak)
-                                    {
-                                        int playerIndex = partidaDestino.Bezeroak;
-                                        var nuevoBezeroa = new Bezeroak(playerIndex, bezero.Client, equipoAsignado);
-                                        partidaDestino.BezeroLista.Add(nuevoBezeroa);
-                                        partidaDestino.Bezeroak++;
-                                    }
-
-                                    if (partidaDestino.Bezeroak == 4)
-                                    {
-                                        Partida p = partidaDestino;
-                                        Task.Run(() => IniciarPartida(p));
-                                        if (partidaDestino == partidaPublicaActual)
-                                            partidaPublicaActual = CrearPartida();
-                                    }
-
-                                    parejas.Remove(int.Parse(codigoJoin));
-                                }
-                                else
-                                {
-                                    writer.WriteLine("ERROR_PAREJA_BETEA");
-                                    writer.Flush();
-                                    client.Close();
-                                }
-                            }
-                            else
-                            {
-                                writer.WriteLine("ERROR_CODIGO_DUO");
-                                writer.Flush();
-                                client.Close();
+                                Partida p = partidaBerria;
+                                jokalarienTaldeakSortu(p);
+                                Task.Run(() => IniciarPartida(p));
+                                partidaPublicaActual = CrearPartida();
                             }
                         }
                         break;
@@ -369,7 +309,36 @@ namespace Zerbitzaria
                 Task.Run(() => ProcesarNuevoJugador(client, ref partidaPublicaActual));
             }
         }
-
+        private static void jokalarienTaldeakSortu(Partida partida)
+        {
+            int Talde0Kop = 0;
+            int laguntzaile = 0;
+            foreach (var jokalaria in partida.BezeroLista)
+            {
+                if (jokalaria.Taldea == 0)
+                {
+                    Talde0Kop++;
+                }
+            }
+            if (Talde0Kop < 4)
+            {
+                foreach(var jokalari in partida.BezeroLista)
+                {
+                    if(jokalari.Taldea == 0)
+                    {
+                        jokalari.Taldea = 2;
+                    }
+                }
+            }
+            else
+            {
+                foreach(var jokalariak in partida.BezeroLista)
+                {
+                    jokalariak.Taldea = (laguntzaile % 2) + 1;
+                    laguntzaile ++;
+                }
+            }
+        }
         private static void IniciarPartida(Partida partida)
         {
             try
