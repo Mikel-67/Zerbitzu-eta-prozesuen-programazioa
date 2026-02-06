@@ -74,8 +74,6 @@ namespace Zerbitzaria
         private static Random random = new Random(); //Kodigoak sortzeko
         private static int nextPartidaId = 0;
         private static object partidasLock = new object();
-        private static int bikoteDago = 0;
-        private static bool taldekideaBilatu = false;
 
         private static Partida CrearPartida(string codigo = null)
         {
@@ -133,14 +131,8 @@ namespace Zerbitzaria
                 {
                     if (partida.PartidaId == id)
                     {
-                        if (taldekideaBilatu)
+                        if (partida.Bezeroak <= 1)
                         {
-                            taldekideaBilatu = false;
-                            return partida;
-                        }
-                        if (partida.Bezeroak <= 2)
-                        {
-                            taldekideaBilatu = true;
                             return partida;
                         }
                     }
@@ -257,36 +249,18 @@ namespace Zerbitzaria
 
                     case "ID_ESKATU":
                         int ID = partidaPublicaActual.PartidaId;
-                        Partida partidaBerria;
 
-                        lock (partidasLock)
-                        {
-                            partidaBerria = BilatuPartidaById(ID);
-                        }
-                      
+                        Partida partidaBerria = BilatuPartidaById(ID);
+
                         if (partidaBerria == null)
                         {
                             partidaBerria = CrearPartida();
                         }
                         lock (partidasLock)
                         {
-                            int taldea;
-                            if (bikoteDago >= 2)
-                            {
-                                taldea = 2;
-                                bikoteDago++;
-                                if (bikoteDago == 4)
-                                {
-                                    bikoteDago = 0;
-                                }
-                            }
-                            else
-                            {
-                                taldea = 1;
-                                bikoteDago++;
-                            }
+                            int taldea = 1;
 
-                                var bezeroaObj = new Bezeroak(partidaBerria.Bezeroak, client, taldea);
+                            var bezeroaObj = new Bezeroak(partidaBerria.Bezeroak, client, taldea);
                             partidaBerria.BezeroLista.Add(bezeroaObj);
                             partidaBerria.Bezeroak++;
 
