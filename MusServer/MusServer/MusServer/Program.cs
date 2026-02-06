@@ -75,6 +75,7 @@ namespace Zerbitzaria
         private static int nextPartidaId = 0;
         private static object partidasLock = new object();
         private static bool bikoteDago = false;
+        private static bool taldekideaBilatu = false;
 
         private static Partida CrearPartida(string codigo = null)
         {
@@ -132,8 +133,14 @@ namespace Zerbitzaria
                 {
                     if (partida.PartidaId == id)
                     {
+                        if (taldekideaBilatu)
+                        {
+                            taldekideaBilatu = false;
+                            return partida;
+                        }
                         if (partida.Bezeroak <= 2)
                         {
+                            taldekideaBilatu = true;
                             return partida;
                         }
                     }
@@ -250,9 +257,13 @@ namespace Zerbitzaria
 
                     case "ID_ESKATU":
                         int ID = partidaPublicaActual.PartidaId;
+                        Partida partidaBerria;
 
-                        Partida partidaBerria = BilatuPartidaById(ID);
-
+                        lock (partidasLock)
+                        {
+                            partidaBerria = BilatuPartidaById(ID);
+                        }
+                      
                         if (partidaBerria == null)
                         {
                             partidaBerria = CrearPartida();
