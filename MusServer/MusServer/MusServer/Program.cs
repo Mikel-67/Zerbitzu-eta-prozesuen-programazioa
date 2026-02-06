@@ -366,7 +366,7 @@ namespace Zerbitzaria
                     string info = "";
                     foreach (var o in partida.BezeroLista)
                     {
-                        info = info + o.Id + o.Taldea + ",";
+                        info = info + o.Taldea + o.Id + ",";
                     }
                     info = info.TrimEnd(',');
                     Console.WriteLine($"[Partida {partida.PartidaId}] Enviando info inicial a jugador {b.PlayerZnb}: {info}");
