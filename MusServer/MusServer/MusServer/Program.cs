@@ -369,6 +369,7 @@ namespace Zerbitzaria
                         info = info + o.Id + o.Taldea + ",";
                     }
                     info = info.TrimEnd(',');
+                    Console.WriteLine($"[Partida {partida.PartidaId}] Enviando info inicial a jugador {b.PlayerZnb}: {info}");
                     b.PlayerWriter.WriteLine("INFO:" + info);
                     b.PlayerWriter.Flush();
                 }
