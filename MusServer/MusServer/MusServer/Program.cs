@@ -74,7 +74,7 @@ namespace Zerbitzaria
         private static Random random = new Random(); //Kodigoak sortzeko
         private static int nextPartidaId = 0;
         private static object partidasLock = new object();
-        private static bool bikoteDago = false;
+        private static int bikoteDago = 0;
         private static bool taldekideaBilatu = false;
 
         private static Partida CrearPartida(string codigo = null)
@@ -271,15 +271,19 @@ namespace Zerbitzaria
                         lock (partidasLock)
                         {
                             int taldea;
-                            if (bikoteDago)
+                            if (bikoteDago >= 2)
                             {
                                 taldea = 2;
-                                bikoteDago = false;
+                                bikoteDago++;
+                                if (bikoteDago == 4)
+                                {
+                                    bikoteDago = 0;
+                                }
                             }
                             else
                             {
                                 taldea = 1;
-                                bikoteDago = true;
+                                bikoteDago++;
                             }
 
                                 var bezeroaObj = new Bezeroak(partidaBerria.Bezeroak, client, taldea);
