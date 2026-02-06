@@ -34,6 +34,7 @@ namespace Zerbitzaria
         public class Bezeroak
         {
             private int playerZnb;
+            private string id;
             private List<string> eskua;
             private NetworkStream stream;
             private StreamWriter playerWriter;
@@ -41,7 +42,7 @@ namespace Zerbitzaria
             private TcpClient client;
             private int taldea;
 
-            public Bezeroak(int playerZnb, TcpClient client, int taldea)
+            public Bezeroak(int playerZnb, TcpClient client, int taldea, string id)
             {
                 this.playerZnb = playerZnb;
                 this.client = client;
@@ -50,6 +51,7 @@ namespace Zerbitzaria
                 playerWriter = new StreamWriter(stream) { AutoFlush = true };
                 playerReader = new StreamReader(stream);
                 this.taldea = taldea;
+                this.id = id;
             }
 
             public int PlayerZnb => playerZnb;
@@ -58,6 +60,7 @@ namespace Zerbitzaria
             public StreamWriter PlayerWriter => playerWriter;
             public StreamReader PlayerReader => playerReader;
             public int Taldea { get => taldea; set => taldea = value; }
+            public string Id => id;
         }
         public class Pareja
         {
@@ -164,7 +167,8 @@ namespace Zerbitzaria
                             partidaAsignada = partidaPublicaActual;
 
                             int taldea = 0;
-                            var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea);
+                            string id = reader.ReadLine();
+                            var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea, id);
                             partidaAsignada.BezeroLista.Add(bezeroaObj);
                             partidaAsignada.Bezeroak++;
 
@@ -191,7 +195,8 @@ namespace Zerbitzaria
                         lock (partidasLock)
                         {
                             int taldea = (partidaAsignada.Bezeroak % 2) + 1;
-                            var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea);
+                            string id = reader.ReadLine();
+                            var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea, id);
                             partidaAsignada.BezeroLista.Add(bezeroaObj);
                             partidaAsignada.Bezeroak++;
 
@@ -224,7 +229,8 @@ namespace Zerbitzaria
                             lock (partidasLock)
                             {
                                 int taldea = (partidaAsignada.Bezeroak % 2) + 1;
-                                var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea);
+                                string id = reader.ReadLine();
+                                var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea, id);
                                 partidaAsignada.BezeroLista.Add(bezeroaObj);
                                 partidaAsignada.Bezeroak++;
 
@@ -270,8 +276,9 @@ namespace Zerbitzaria
                         lock (partidasLock)
                         {
                             int taldea = 1;
+                            string id = reader.ReadLine();
 
-                            var bezeroaObj = new Bezeroak(partidaBerria.Bezeroak, client, taldea);
+                            var bezeroaObj = new Bezeroak(partidaBerria.Bezeroak, client, taldea, id);
                             partidaBerria.BezeroLista.Add(bezeroaObj);
                             partidaBerria.Bezeroak++;
 
@@ -354,6 +361,17 @@ namespace Zerbitzaria
         {
             try
             {
+                foreach (var b in partida.BezeroLista)
+                {
+                    string info = "";
+                    foreach (var o in partida.BezeroLista)
+                    {
+                        info = info + o.Id + o.Taldea + ",";
+                    }
+                    info = info.TrimEnd(',');
+                    b.PlayerWriter.WriteLine("INFO:" + info);
+                    b.PlayerWriter.Flush();
+                }
                 Console.WriteLine($"[Partida {partida.PartidaId}] Kartak banatzen...");
                 KartakBanatu(partida);
                 Thread.Sleep(2000);
