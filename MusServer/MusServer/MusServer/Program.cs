@@ -74,6 +74,7 @@ namespace Zerbitzaria
         private static Random random = new Random(); //Kodigoak sortzeko
         private static int nextPartidaId = 0;
         private static object partidasLock = new object();
+        private static int partidaKop = 0;
 
         private static Partida CrearPartida(string codigo = null)
         {
@@ -178,6 +179,7 @@ namespace Zerbitzaria
                                 jokalarienTaldeakSortu(p);
                                 Task.Run(() => IniciarPartida(p));
                                 partidaPublicaActual = CrearPartida();
+                                partidaKop++;
                             }
                         }
                         break;
@@ -254,11 +256,15 @@ namespace Zerbitzaria
 
                         if (partidaBerria == null)
                         {
-                            ID++;
-                            partidaBerria = BilatuPartidaById(ID);
+                            for (int i = 0; i < partidaKop; i++)
+                            {
+                                ID++;
+                                partidaBerria = BilatuPartidaById(ID);
+                            }
                             if (partidaBerria == null)
                             {
                                 partidaBerria = CrearPartida();
+                                partidaKop++;
                             }
                         }
                         lock (partidasLock)
