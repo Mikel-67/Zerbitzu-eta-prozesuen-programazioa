@@ -398,6 +398,7 @@ namespace Zerbitzaria
                 {
                     partidas.Remove(partida.PartidaId);
                     Console.WriteLine($"[Partida {partida.PartidaId}] Eliminada del servidor");
+                    partidaKop--;
                 }
             }
         }
