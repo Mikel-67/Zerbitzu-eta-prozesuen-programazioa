@@ -254,7 +254,12 @@ namespace Zerbitzaria
 
                         if (partidaBerria == null)
                         {
-                            partidaBerria = CrearPartida();
+                            ID++;
+                            partidaBerria = BilatuPartidaById(ID);
+                            if (partidaBerria == null)
+                            {
+                                partidaBerria = CrearPartida();
+                            }
                         }
                         lock (partidasLock)
                         {
