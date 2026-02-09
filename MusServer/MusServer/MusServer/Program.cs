@@ -455,6 +455,8 @@ namespace Zerbitzaria
                 {
                     jokalaria.PlayerWriter.WriteLine("TURN");
                     jokalaria.PlayerWriter.Flush();
+                    zeinenTurnDa(partida, jokalaria);
+
                     string erabakia = jokalaria.PlayerReader.ReadLine();
                     Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} erabakia: {erabakia}");
                     string mezua = $"{jokalaria.Id};{jokalaria.PlayerZnb};{erabakia}";
@@ -464,6 +466,8 @@ namespace Zerbitzaria
 
                     taldekidea.PlayerWriter.WriteLine("TURN");
                     taldekidea.PlayerWriter.Flush();
+                    zeinenTurnDa(partida, taldekidea);
+
                     string taldekideErabakia = taldekidea.PlayerReader.ReadLine();
                     Console.WriteLine($"Taldekidearen erabakia: {taldekidea.PlayerZnb} erabakia: {taldekideErabakia}");
                     mezua = $"{taldekidea.Id};{taldekidea.PlayerZnb};{taldekideErabakia}";
@@ -476,6 +480,8 @@ namespace Zerbitzaria
                     {
                         etsai.PlayerWriter.WriteLine("TURN");
                         etsai.PlayerWriter.Flush();
+                        zeinenTurnDa(partida, etsai);
+
                         string etsaiErabakia = etsai.PlayerReader.ReadLine();
                         Console.WriteLine($"Etsai {etsai.PlayerZnb} erabakia: {etsaiErabakia}");
                         mezua = $"{etsai.Id};{etsai.PlayerZnb};{etsaiErabakia}";
@@ -542,15 +548,28 @@ namespace Zerbitzaria
                 }
                 partida.CountJuego = 0;
                 goto CheckBukatu;
+            CheckBukatu:
+                if (partida.Talde1Puntuak >= 40)
+                {
+                    Console.WriteLine("Talde 1 irabazi du partida!");
+                }
+                else
+                {
+                    Console.WriteLine("Talde 2 irabazi du partida!");
+                }
             }
-        CheckBukatu:
-            if (partida.Talde1Puntuak >= 40)
+        }
+
+        private static void zeinenTurnDa(Partida partida, Bezeroak jokalaria)
+        {
+            foreach (var b in partida.BezeroLista)
             {
-                Console.WriteLine("Talde 1 irabazi du partida!");
-            }
-            else
-            {
-                Console.WriteLine("Talde 2 irabazi du partida!");
+                if (b.PlayerZnb != jokalaria.PlayerZnb)
+                {
+                    string id = $"{jokalaria.Id};{jokalaria.PlayerZnb}";
+                    b.PlayerWriter.WriteLine("TURN;" + id);
+                    b.PlayerWriter.Flush();
+                }
             }
         }
 
@@ -642,6 +661,7 @@ namespace Zerbitzaria
                     {
                         if (talde1Jokua && talde2Jokua)
                         {
+                            zeinenTurnDa(partida, jokalaria);
                             Console.WriteLine("Talde biak jokua dauka");
                             jokalaria.PlayerWriter.WriteLine(jokua);
                             jokalaria.PlayerWriter.Flush();
@@ -659,6 +679,7 @@ namespace Zerbitzaria
                 else
                 {
                     // Para GRANDES, PEQUEÑAS, PUNTO - preguntar siempre
+                    zeinenTurnDa(partida, jokalaria);
                     e1 = jokalariarenErabakia(jokalaria, jokua, partida);
                     mezua = $"{jokalaria.Id};{jokalaria.PlayerZnb};{e1}";
                     mezuaJokalariguztientzat(partida, mezua);
@@ -688,6 +709,7 @@ namespace Zerbitzaria
                     {
                         if (talde1Jokua && talde2Jokua)
                         {
+                            zeinenTurnDa(partida, etsai1);
                             Console.WriteLine("Talde biak jokua dauka");
                             etsai1.PlayerWriter.WriteLine(jokua);
                             etsai1.PlayerWriter.Flush();
@@ -704,6 +726,7 @@ namespace Zerbitzaria
                 }
                 else
                 {
+                    zeinenTurnDa(partida, etsai1);
                     e2 = jokalariarenErabakia(etsai1, jokua, partida);
                     mezua = $"{etsai1.Id};{etsai1.PlayerZnb};{e2}";
                     mezuaJokalariguztientzat(partida, mezua);
@@ -733,6 +756,7 @@ namespace Zerbitzaria
                     {
                         if (talde1Jokua && talde2Jokua)
                         {
+                            zeinenTurnDa(partida, taldekidea);
                             Console.WriteLine("Bi taldeek jokua daukate");
                             taldekidea.PlayerWriter.WriteLine(jokua);
                             taldekidea.PlayerWriter.Flush();
@@ -749,6 +773,7 @@ namespace Zerbitzaria
                 }
                 else
                 {
+                    zeinenTurnDa(partida, taldekidea);
                     e3 = jokalariarenErabakia(taldekidea, jokua, partida);
                     mezua = $"{taldekidea.Id};{taldekidea.PlayerZnb};{e3}";
                     mezuaJokalariguztientzat(partida, mezua);
@@ -778,6 +803,7 @@ namespace Zerbitzaria
                     {
                         if (talde1Jokua && talde2Jokua)
                         {
+                            zeinenTurnDa(partida, etsai2);
                             Console.WriteLine("Bi taldeek jokua daukate");
                             etsai2.PlayerWriter.WriteLine(jokua);
                             etsai2.PlayerWriter.Flush();
@@ -794,6 +820,7 @@ namespace Zerbitzaria
                 }
                 else
                 {
+                    zeinenTurnDa(partida, etsai2);
                     e4 = jokalariarenErabakia(etsai2, jokua, partida);
                     mezua = $"{etsai2.Id};{etsai2.PlayerZnb};{e4}";
                     mezuaJokalariguztientzat(partida, mezua);
