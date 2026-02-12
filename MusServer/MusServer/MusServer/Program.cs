@@ -1317,6 +1317,10 @@ namespace Zerbitzaria
                     totala++;
                 }
                 partida.Talde1Puntuak += totala;
+                foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
+                {
+                    b.PlayerWriter.WriteLine("LABURPENA:"+ jokua +","+ totala +",1");
+                }
                 Console.WriteLine($"Talde 1 puntuazioa: {partida.Talde1Puntuak}");
             }
             else
@@ -1327,6 +1331,10 @@ namespace Zerbitzaria
                     totala = totala + calcularPuntosParesEquipo(new List<List<int>> { kartaNumEtsai1, kartaNumEtsai2 });
                 }
                 partida.Talde2Puntuak += totala;
+                foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
+                {
+                    b.PlayerWriter.WriteLine("LABURPENA:" + jokua + "," + totala + ",2");
+                }
                 Console.WriteLine($"Talde 2 puntuazioa: {partida.Talde2Puntuak}");
             }
         }
