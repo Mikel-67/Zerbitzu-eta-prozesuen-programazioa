@@ -8,7 +8,10 @@
     {
         public class Zerbitzaria
         {
-            public class Partida
+        private static Partida partidaPublica4Reyes = null;
+        private static Partida partidaPublica8Reyes = null;
+       
+        public class Partida
             {
                 public int PartidaId { get; set; }
                 public string Codigo { get; set; } // Código de sala privada (null si es pública)
@@ -24,13 +27,18 @@
                 public object LockObj { get; set; } = new object();
                 public bool EsOchoReyes { get; set; }
 
+            private static Partida partidaPublica4Reyes = null;
+            private static Partida partidaPublica8Reyes = null;
+
             public Partida(int id, string codigo = null, bool esOchoReyes = false)
                 {
-                    PartidaId = id;
-                    Codigo = codigo;
-                    Baraja = KartakSortu(EsOchoReyes);
-                    FechaCreacion = DateTime.Now;
-                }
+                this.PartidaId = id;
+                this.Codigo = codigo;
+                this.EsOchoReyes = esOchoReyes; // ¡No olvides asignar esto!
+                this.Baraja = KartakSortu(esOchoReyes); 
+                this.FechaCreacion = DateTime.Now;
+
+            }
             }
             public class Bezeroak
             {
@@ -84,11 +92,13 @@
             {
                 lock (partidasLock)
                 {
-                    int id = nextPartidaId++;
-                    var partida = new Partida(id, codigo, ochoReyes);
-                    partidas[id] = partida;
+                int id = nextPartidaId++;
+                // Aquí se crea el objeto
+                var partida = new Partida(id, codigo, ochoReyes);
+                partidas[id] = partida;
+                
 
-                    if (!string.IsNullOrEmpty(codigo))
+                if (!string.IsNullOrEmpty(codigo))
                     {
                         partidasPorCodigo[codigo] = partida;
                         Console.WriteLine($"Partida pribatua sortuta, kodea: {codigo}");
@@ -146,185 +156,122 @@
                     return null;
                 }
             }
-            private static void ProcesarNuevoJugador(TcpClient client, ref Partida partidaPublicaActual)
+        private static void ProcesarNuevoJugador(TcpClient client)
+        {
+            try
             {
-                try
+                NetworkStream stream = client.GetStream();
+                StreamWriter writer = new StreamWriter(stream) { AutoFlush = true };
+                StreamReader reader = new StreamReader(stream);
+
+                // El cliente envía "PUBLICA_4", "PUBLICA_8", "CREAR_PRIVADA" o "UNIRSE_PRIVADA"
+                string tipoSala = reader.ReadLine();
+                Console.WriteLine($"📩 Cliente eligió: {tipoSala}");
+
+                Partida partidaAsignada = null;
+
+                switch (tipoSala)
                 {
-                    NetworkStream stream = client.GetStream();
-                    StreamWriter writer = new StreamWriter(stream) { AutoFlush = true };
-                    StreamReader reader = new StreamReader(stream);
+                    case "PUBLICA_4":
+                    case "PUBLICA_8":
+                        bool esOchoReyes = (tipoSala == "PUBLICA_8");
 
-                    string tipoSala = reader.ReadLine();
-                    Console.WriteLine($"📩 Cliente eligió: {tipoSala}");
+                        lock (partidasLock)
+                        {
+                            // Elegimos la cola correspondiente
+                            partidaAsignada = esOchoReyes ? partidaPublica8Reyes : partidaPublica4Reyes;
 
-                    Partida partidaAsignada = null;
-                    Pareja parejaAsignada = null;
+                            string id = reader.ReadLine();
+                            var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, 0, id);
+                            partidaAsignada.BezeroLista.Add(bezeroaObj);
+                            partidaAsignada.Bezeroak++;
 
-                    switch (tipoSala)
-                    {
-                        case "PUBLICA":
-                            // (lógica original de Main, movida aquí)
+                            writer.WriteLine("OK");
+
+                            if (partidaAsignada.Bezeroak == 4)
+                            {
+                                Partida p = partidaAsignada;
+                                jokalarienTaldeakSortu(p);
+                                Task.Run(() => IniciarPartida(p));
+
+                                // IMPORTANTE: Creamos una nueva sala VACÍA para los siguientes que vengan
+                                if (esOchoReyes)
+                                    partidaPublica8Reyes = CrearPartida(null, true);
+                                else
+                                    partidaPublica4Reyes = CrearPartida(null, false);
+                            }
+                        }
+                        break;
+
+                    case "CREAR_PRIVADA":
+                        // Aquí podrías leer otro parámetro para saber si la privada es de 4 u 8
+                        string codigoNuevo = GenerarCodigoUnico();
+                        partidaAsignada = CrearPartida(codigoNuevo, false); // Por defecto 4 reyes
+
+                        lock (partidasLock)
+                        {
+                            string id = reader.ReadLine();
+                            var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, 0, id);
+                            partidaAsignada.BezeroLista.Add(bezeroaObj);
+                            partidaAsignada.Bezeroak++;
+
+                            writer.WriteLine("CODIGO:" + codigoNuevo);
+                        }
+                        break;
+
+                    case "UNIRSE_PRIVADA":
+                        writer.WriteLine("PEDIR_CODIGO");
+                        string codigoIngresado = reader.ReadLine();
+                        partidaAsignada = BuscarPartidaPorCodigo(codigoIngresado);
+
+                        if (partidaAsignada != null && partidaAsignada.Bezeroak < 4)
+                        {
                             lock (partidasLock)
                             {
-                                partidaAsignada = partidaPublicaActual;
-
-                                int taldea = 0;
                                 string id = reader.ReadLine();
-                                var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea, id);
+                                var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, 0, id);
                                 partidaAsignada.BezeroLista.Add(bezeroaObj);
                                 partidaAsignada.Bezeroak++;
-
                                 writer.WriteLine("OK");
-                                writer.Flush();
-
-                                Console.WriteLine($"[Partida {partidaAsignada.PartidaId} - PÚBLICA] Jokalari {partidaAsignada.Bezeroak}/4");
 
                                 if (partidaAsignada.Bezeroak == 4)
                                 {
                                     Partida p = partidaAsignada;
                                     jokalarienTaldeakSortu(p);
                                     Task.Run(() => IniciarPartida(p));
-                                    partidaPublicaActual = CrearPartida();
-                                    partidaKop++;
                                 }
                             }
-                            break;
-
-                        case "CREAR_PRIVADA":
-                            string codigoNuevo = GenerarCodigoUnico();
-                            partidaAsignada = CrearPartida(codigoNuevo);
-
-                            lock (partidasLock)
-                            {
-                                int taldea = (partidaAsignada.Bezeroak % 2) + 1;
-                                string id = reader.ReadLine();
-                                var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea, id);
-                                partidaAsignada.BezeroLista.Add(bezeroaObj);
-                                partidaAsignada.Bezeroak++;
-
-                                writer.WriteLine("CODIGO:" + codigoNuevo);
-                                writer.Flush();
-
-                                Console.WriteLine($"[Partida {partidaAsignada.PartidaId} - PRIVADA 🔒 {codigoNuevo}] Creador (1/4)");
-
-                                if (partidaAsignada.Bezeroak == 4)
-                                {
-                                    Partida p = partidaAsignada;
-                                    Task.Run(() => IniciarPartida(p));
-                                }
-                            }
-                            break;
-
-                        case "UNIRSE_PRIVADA":
-                            writer.WriteLine("PEDIR_CODIGO");
-                            writer.Flush();
-
-                            string codigoIngresado = reader.ReadLine();
-                            Console.WriteLine($"🔑 Cliente intentando código: {codigoIngresado}");
-
-                            partidaAsignada = BuscarPartidaPorCodigo(codigoIngresado);
-
-                            if (partidaAsignada != null)
-                            {
-                                lock (partidasLock)
-                                {
-                                    int taldea = (partidaAsignada.Bezeroak % 2) + 1;
-                                    string id = reader.ReadLine();
-                                    var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea, id);
-                                    partidaAsignada.BezeroLista.Add(bezeroaObj);
-                                    partidaAsignada.Bezeroak++;
-
-                                    writer.WriteLine("OK");
-                                    writer.Flush();
-
-                                    Console.WriteLine($"[Partida {partidaAsignada.PartidaId} - PRIVADA 🔒] Jokalari {partidaAsignada.Bezeroak}/4");
-
-                                    if (partidaAsignada.Bezeroak == 4)
-                                    {
-                                        Partida p = partidaAsignada;
-                                        Task.Run(() => IniciarPartida(p));
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                writer.WriteLine("ERROR_CODIGO");
-                                writer.Flush();
-                                client.Close();
-                                Console.WriteLine("❌ Código inválido o sala llena");
-                            }
-                            break;
-
-                        case "ID_ESKATU":
-                            int ID = partidaPublicaActual.PartidaId;
-
-                            Partida partidaBerria = BilatuPartidaById(ID);
-
-                            if (partidaBerria == null)
-                            {
-                                for (int i = 0; i < partidaKop; i++)
-                                {
-                                    ID++;
-                                    partidaBerria = BilatuPartidaById(ID);
-                                }
-                                if (partidaBerria == null)
-                                {
-                                    partidaBerria = CrearPartida();
-                                    partidaKop++;
-                                }
-                            }
-                            lock (partidasLock)
-                            {
-                                int taldea = 1;
-                                string id = reader.ReadLine();
-
-                                var bezeroaObj = new Bezeroak(partidaBerria.Bezeroak, client, taldea, id);
-                                partidaBerria.BezeroLista.Add(bezeroaObj);
-                                partidaBerria.Bezeroak++;
-
-                                writer.WriteLine("OK");
-                                writer.Flush();
-
-                                Console.WriteLine($"[Partida {partidaBerria.PartidaId} - PÚBLICA] Jokalari {partidaBerria.Bezeroak}/4");
-
-                                if (partidaBerria.Bezeroak == 4)
-                                {
-                                    Partida p = partidaBerria;
-                                    jokalarienTaldeakSortu(p);
-                                    Task.Run(() => IniciarPartida(p));
-                                    partidaPublicaActual = CrearPartida();
-                                }
-                            }
-                            break;
-                        default:
-                            writer.WriteLine("ERROR");
-                            writer.Flush();
+                        }
+                        else
+                        {
+                            writer.WriteLine("ERROR_CODIGO");
                             client.Close();
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"❌ Error procesando jugador: {ex.Message}");
-                    try { client.Close(); } catch { }
+                        }
+                        break;
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error: {ex.Message}");
+            }
+        }
 
-            public static void Main(string[] args)
+        public static void Main(string[] args)
             {
                 int port = 13000;
                 TcpListener listener = new TcpListener(IPAddress.Any, port);
                 listener.Start();
-                Console.WriteLine("Zerbitzaria irekita, zain...");
+            partidaPublica4Reyes = CrearPartida(null, false);
+            partidaPublica8Reyes = CrearPartida(null, true);
+            Console.WriteLine("Zerbitzaria irekita, zain...");
 
-                Partida partidaPublicaActual = CrearPartida();
 
                 while (true)
                 {
                     TcpClient client = listener.AcceptTcpClient();
                     Console.WriteLine("Bezeroa konektatuta.");
 
-                    Task.Run(() => ProcesarNuevoJugador(client, ref partidaPublicaActual));
+                    Task.Run(() => ProcesarNuevoJugador(client));
                 }
             }
             private static void jokalarienTaldeakSortu(Partida partida)
