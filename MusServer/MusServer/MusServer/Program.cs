@@ -91,6 +91,7 @@ namespace Zerbitzaria
                 {
                     partidasPorCodigo[codigo] = partida;
                     Console.WriteLine($"Partida pribatua sortuta, kodea: {codigo}");
+
                 }
 
                 return partida;
@@ -200,9 +201,7 @@ namespace Zerbitzaria
                             partidaAsignada.BezeroLista.Add(bezeroaObj);
                             partidaAsignada.Bezeroak++;
 
-                            writer.WriteLine("CODIGO");
-                            writer.Flush();
-                            writer.WriteLine(codigoNuevo);
+                            writer.WriteLine("CODIGO:" + codigoNuevo);
                             writer.Flush();
 
                             Console.WriteLine($"[Partida {partidaAsignada.PartidaId} - PRIVADA 🔒 {codigoNuevo}] Creador (1/4)");
@@ -1356,10 +1355,18 @@ namespace Zerbitzaria
             }
             else
             {
-                Console.WriteLine("Talde 2 da irabazlea" + jokua);
+                Console.WriteLine("Talde 2 da irabazlea " + jokua);
                 if (jokua == "PARES")
                 {
                     totala = totala + calcularPuntosParesEquipo(new List<List<int>> { kartaNumEtsai1, kartaNumEtsai2 });
+                }
+                else if (jokua == "JUEGO")
+                {
+                    totala = totala + calcularPuntosJuegoEquipo(new List<List<int>> { kartaNumEtsai1, kartaNumEtsai2 });
+                }
+                else if (jokua == "PUNTO")
+                {
+                    totala++;
                 }
                 partida.Talde2Puntuak += totala;
                 foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
