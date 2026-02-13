@@ -444,11 +444,17 @@ namespace Zerbitzaria
 
             Bezeroak lehenEtsai = etsaiLista[0];
             Bezeroak bigarrenEtsai = etsaiLista[1];
+            var rondaKop = 0;
 
             Console.WriteLine($"Jokalaria: {jokalaria.PlayerZnb}, Taldekidea: {taldekidea.PlayerZnb}, Etsaienak: {lehenEtsai.PlayerZnb}, {bigarrenEtsai.PlayerZnb}");
             while (partida.Talde1Puntuak < 40 && partida.Talde2Puntuak < 40)
             {
                 Console.WriteLine($"Talde 1 puntuazioa: {partida.Talde1Puntuak}, Talde 2 puntuazioa: {partida.Talde2Puntuak}");
+                rondaKop++;
+                if(rondaKop > 1)
+                {
+                    KartakBanatu(partida);
+                }
 
                 while (true)
                 {
