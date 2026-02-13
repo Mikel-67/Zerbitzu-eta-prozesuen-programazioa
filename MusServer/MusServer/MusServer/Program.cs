@@ -532,19 +532,49 @@ namespace Zerbitzaria
                     }
                 }
                 // Mus amaitu da, orain Grandes jolasten da
+                foreach (var b in partida.BezeroLista)
+                {
+                    b.PlayerWriter.WriteLine("RONDA:HANDIAK");
+                    b.PlayerWriter.Flush();
+                }
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "GRANDES", partida);
+                
                 if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
+                foreach (var b in partida.BezeroLista)
+                {
+                    b.PlayerWriter.WriteLine("RONDA:TXIKIAK");
+                    b.PlayerWriter.Flush();
+                }
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PEQUEÑAS", partida);
+                
                 if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
+                foreach (var b in partida.BezeroLista)
+                {
+                    b.PlayerWriter.WriteLine("RONDA:PAREAK");
+                    b.PlayerWriter.Flush();
+                }
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PARES", partida);
+                
                 if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
                 partida.CountJuego = 0;
+                foreach (var b in partida.BezeroLista)
+                {
+                    b.PlayerWriter.WriteLine("RONDA:JOKUA");
+                    b.PlayerWriter.Flush();
+                }
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "JUEGO", partida);
+                
                 if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
                 if (partida.CountJuego == 4)
                 {
+                    foreach (var b in partida.BezeroLista)
+                    {
+                        b.PlayerWriter.WriteLine("RONDA:PUNTUA");
+                        b.PlayerWriter.Flush();
+                    }
                     partida.CountJuego = 0;
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PUNTO", partida);
+                   
                 }
                 partida.CountJuego = 0;
                 goto CheckBukatu;
@@ -983,6 +1013,7 @@ namespace Zerbitzaria
                         {
                             if (jokua == "PARES")
                             {
+                                
                                 totala = totala + calcularPuntosParesEquipo(new List<List<int>> {
                                     kartakZenbakiraBihurtu(jokalaria,jokua),
                                     kartakZenbakiraBihurtu(taldekidea,jokua) });

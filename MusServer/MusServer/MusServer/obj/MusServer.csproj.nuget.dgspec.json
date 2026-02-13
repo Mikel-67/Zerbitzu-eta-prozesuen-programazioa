@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Zerbitzu-eta-prozesuen-programazioa\\Zerbitzu-eta-prozesuen-programazioa\\MusServer\\MusServer\\MusServer\\MusServer.csproj": {}
+    "D:\\Zerbitzu-eta-prozesuen-programazioa\\MusServer\\MusServer\\MusServer\\MusServer.csproj": {}
   },
   "projects": {
-    "D:\\Zerbitzu-eta-prozesuen-programazioa\\Zerbitzu-eta-prozesuen-programazioa\\MusServer\\MusServer\\MusServer\\MusServer.csproj": {
+    "D:\\Zerbitzu-eta-prozesuen-programazioa\\MusServer\\MusServer\\MusServer\\MusServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Zerbitzu-eta-prozesuen-programazioa\\Zerbitzu-eta-prozesuen-programazioa\\MusServer\\MusServer\\MusServer\\MusServer.csproj",
+        "projectUniqueName": "D:\\Zerbitzu-eta-prozesuen-programazioa\\MusServer\\MusServer\\MusServer\\MusServer.csproj",
         "projectName": "MusServer",
-        "projectPath": "D:\\Zerbitzu-eta-prozesuen-programazioa\\Zerbitzu-eta-prozesuen-programazioa\\MusServer\\MusServer\\MusServer\\MusServer.csproj",
+        "projectPath": "D:\\Zerbitzu-eta-prozesuen-programazioa\\MusServer\\MusServer\\MusServer\\MusServer.csproj",
         "packagesPath": "C:\\Users\\ik012982i18\\.nuget\\packages\\",
-        "outputPath": "D:\\Zerbitzu-eta-prozesuen-programazioa\\Zerbitzu-eta-prozesuen-programazioa\\MusServer\\MusServer\\MusServer\\obj\\",
+        "outputPath": "D:\\Zerbitzu-eta-prozesuen-programazioa\\MusServer\\MusServer\\MusServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

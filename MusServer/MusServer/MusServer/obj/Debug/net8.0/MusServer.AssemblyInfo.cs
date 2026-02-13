@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MusServer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+85e2b94de8ae3ffb043f752e3f76e56bae8a0c11")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+13602c7fefe8460217f7d262e92d82e8cc2c83ad")]
 [assembly: System.Reflection.AssemblyProductAttribute("MusServer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MusServer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
