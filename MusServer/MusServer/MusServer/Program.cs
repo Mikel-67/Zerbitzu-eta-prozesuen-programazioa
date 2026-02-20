@@ -414,6 +414,10 @@ namespace Zerbitzaria
 
                 lock (partidasLock)
                 {
+                    foreach (var b in partida.BezeroLista)
+                    {
+                        b.PlayerWriter.WriteLine("END_GAME");
+                    }
                     partidas.Remove(partida.PartidaId);
                     Console.WriteLine($"[Partida {partida.PartidaId}] Eliminada del servidor");
                     partidaKop--;
@@ -542,14 +546,19 @@ namespace Zerbitzaria
                     b.PlayerWriter.WriteLine("RONDA:HANDIAK");
                     b.PlayerWriter.Flush();
                 }
+                Thread.Sleep(2000);
+
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "GRANDES", partida);
-                
+                Thread.Sleep(2000);
+
                 if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
                 foreach (var b in partida.BezeroLista)
                 {
                     b.PlayerWriter.WriteLine("RONDA:TXIKIAK");
                     b.PlayerWriter.Flush();
                 }
+                Thread.Sleep(2000);
+
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PEQUEÑAS", partida);
                 
                 if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
@@ -558,6 +567,8 @@ namespace Zerbitzaria
                     b.PlayerWriter.WriteLine("RONDA:PAREAK");
                     b.PlayerWriter.Flush();
                 }
+                Thread.Sleep(2000);
+
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PARES", partida);
                 
                 if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
@@ -567,6 +578,8 @@ namespace Zerbitzaria
                     b.PlayerWriter.WriteLine("RONDA:JOKUA");
                     b.PlayerWriter.Flush();
                 }
+                Thread.Sleep(2000);
+
                 EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "JUEGO", partida);
                 
                 if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
@@ -578,8 +591,17 @@ namespace Zerbitzaria
                         b.PlayerWriter.Flush();
                     }
                     partida.CountJuego = 0;
+                    Thread.Sleep(2000);
+
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PUNTO", partida);
-                   
+                    Thread.Sleep(2000);
+                    foreach (var b in partida.BezeroLista)
+                    {
+                        b.PlayerWriter.WriteLine("RONDA:AMAIERA");
+                        b.PlayerWriter.Flush();
+                    }
+
+
                 }
                 partida.CountJuego = 0;
                 goto CheckBukatu;
