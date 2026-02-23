@@ -317,18 +317,19 @@ namespace Zerbitzaria
         {
             try
             {
+                // Mientras la partida no haya empezado
                 while (partida.Bezeroak < 4)
                 {
                     if (bezeroa.Client.Client.Poll(1000, SelectMode.SelectRead) && bezeroa.Client.Available == 0)
                     {
-                        throw new Exception("Jugador abandonó antes de empezar");
+                        throw new Exception("Jugador abandonó");
                     }
-                    Thread.Sleep(1000); // Comprobar cada segundo
+                    Thread.Sleep(1000);
                 }
             }
             catch
             {
-                Console.WriteLine($"[SALA {partida.PartidaId}] Abandono detectado: {bezeroa.Id}");
+                Console.WriteLine($"[SALA {partida.PartidaId}] ¡ABANDONO DETECTADO! Limpiando...");
 
                 lock (partidasLock)
                 {
@@ -336,18 +337,26 @@ namespace Zerbitzaria
                     {
                         try
                         {
-                            b.PlayerWriter.WriteLine("END_GAME"); // O un mensaje de "SALA_CANCELADA"
+                            b.PlayerWriter.WriteLine("END_GAME");
                             b.PlayerWriter.Flush();
                             b.Client.Close();
                         }
                         catch { }
                     }
 
-                    partidas.Remove(partida.PartidaId);
-                    if (partida.EsPrivada) partidasPorCodigo.Remove(partida.Codigo);
+                    partida.BezeroLista.Clear();
+                    partida.Bezeroak = 0;
 
-                    // Si era la pública actual, reseteamos la variable global
-                    // (Esto depende de cómo gestiones partidaPublicaActual)
+                    if (partida.EsPrivada)
+                    {
+                        partidas.Remove(partida.PartidaId);
+                        partidasPorCodigo.Remove(partida.Codigo);
+                        Console.WriteLine($"Sala privada {partida.Codigo} eliminada por abandono.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Sala pública {partida.PartidaId} reseteada.");
+                    }
                 }
             }
         }
