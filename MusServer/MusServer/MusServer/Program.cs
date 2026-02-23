@@ -186,6 +186,11 @@ namespace Zerbitzaria
                                 partidaPublicaActual = CrearPartida();
                                 partidaKop++;
                             }
+                            else
+                            {
+                                
+                                Task.Run(() => VigilarSalaDeEspera(partidaAsignada, bezeroaObj));
+                            }
                         }
                         break;
 
@@ -306,6 +311,44 @@ namespace Zerbitzaria
             {
                 Console.WriteLine($"❌ Error procesando jugador: {ex.Message}");
                 try { client.Close(); } catch { }
+            }
+        }
+        private static void VigilarSalaDeEspera(Partida partida, Bezeroak bezeroa)
+        {
+            try
+            {
+                while (partida.Bezeroak < 4)
+                {
+                    if (bezeroa.Client.Client.Poll(1000, SelectMode.SelectRead) && bezeroa.Client.Available == 0)
+                    {
+                        throw new Exception("Jugador abandonó antes de empezar");
+                    }
+                    Thread.Sleep(1000); // Comprobar cada segundo
+                }
+            }
+            catch
+            {
+                Console.WriteLine($"[SALA {partida.PartidaId}] Abandono detectado: {bezeroa.Id}");
+
+                lock (partidasLock)
+                {
+                    foreach (var b in partida.BezeroLista.ToList())
+                    {
+                        try
+                        {
+                            b.PlayerWriter.WriteLine("END_GAME"); // O un mensaje de "SALA_CANCELADA"
+                            b.PlayerWriter.Flush();
+                            b.Client.Close();
+                        }
+                        catch { }
+                    }
+
+                    partidas.Remove(partida.PartidaId);
+                    if (partida.EsPrivada) partidasPorCodigo.Remove(partida.Codigo);
+
+                    // Si era la pública actual, reseteamos la variable global
+                    // (Esto depende de cómo gestiones partidaPublicaActual)
+                }
             }
         }
 
