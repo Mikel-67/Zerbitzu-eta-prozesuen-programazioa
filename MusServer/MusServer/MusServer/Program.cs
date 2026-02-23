@@ -188,8 +188,8 @@ namespace Zerbitzaria
                             }
                             else
                             {
-                                
-                                Task.Run(() => VigilarSalaDeEspera(partidaAsignada, bezeroaObj));
+
+                                Task.Run(() => VigilarDesconexionEnEspera(partidaAsignada, bezeroaObj));
                             }
                         }
                         break;
