@@ -371,9 +371,17 @@ namespace Zerbitzaria
                     Console.WriteLine($"[Partida {partida.PartidaId}] Enviando info inicial a jugador {b.PlayerZnb}: {info}");
                     b.PlayerWriter.WriteLine("INFO:" + info);
                     b.PlayerWriter.Flush();
+                    string respuesta = b.PlayerReader.ReadLine();
+
+                    if (respuesta == null || respuesta == "ABANDONO")
+                    {
+                        throw new IOException("Un jugador ha abandonado la partida.");
+                    }
+
                 }
                 Console.WriteLine($"[Partida {partida.PartidaId}] Kartak banatzen...");
                 KartakBanatu(partida);
+
                 Thread.Sleep(2000);
                 PartidaHasi(partida);
 
@@ -439,7 +447,7 @@ namespace Zerbitzaria
 
             if (etsaiLista.Count != 2)
                 throw new Exception("Etsaien kopurua ez da 2, begiratu bezeroLista.");
-
+            
             Bezeroak lehenEtsai = etsaiLista[0];
             Bezeroak bigarrenEtsai = etsaiLista[1];
             var rondaKop = 0;
@@ -453,6 +461,7 @@ namespace Zerbitzaria
                 {
                     KartakBanatu(partida);
                 }
+                
 
                 while (true)
                 {
@@ -460,7 +469,7 @@ namespace Zerbitzaria
                     jokalaria.PlayerWriter.Flush();
                     zeinenTurnDa(partida, jokalaria);
 
-                    string erabakia = jokalaria.PlayerReader.ReadLine();
+                    string erabakia = LeerRespuestaSegura(jokalaria);
                     Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} erabakia: {erabakia}");
                     string mezua = $"{jokalaria.Id};{jokalaria.PlayerZnb};{erabakia}";
                     mezuaJokalariguztientzat(partida, mezua);
@@ -470,8 +479,7 @@ namespace Zerbitzaria
                     taldekidea.PlayerWriter.WriteLine("TURN");
                     taldekidea.PlayerWriter.Flush();
                     zeinenTurnDa(partida, taldekidea);
-
-                    string taldekideErabakia = taldekidea.PlayerReader.ReadLine();
+                    string taldekideErabakia = LeerRespuestaSegura(taldekidea);
                     Console.WriteLine($"Taldekidearen erabakia: {taldekidea.PlayerZnb} erabakia: {taldekideErabakia}");
                     mezua = $"{taldekidea.Id};{taldekidea.PlayerZnb};{taldekideErabakia}";
                     mezuaJokalariguztientzat(partida, mezua);
@@ -485,7 +493,7 @@ namespace Zerbitzaria
                         etsai.PlayerWriter.Flush();
                         zeinenTurnDa(partida, etsai);
 
-                        string etsaiErabakia = etsai.PlayerReader.ReadLine();
+                        string etsaiErabakia = LeerRespuestaSegura(etsai);
                         Console.WriteLine($"Etsai {etsai.PlayerZnb} erabakia: {etsaiErabakia}");
                         mezua = $"{etsai.Id};{etsai.PlayerZnb};{etsaiErabakia}";
                         mezuaJokalariguztientzat(partida, mezua);
@@ -609,6 +617,15 @@ namespace Zerbitzaria
                     Console.WriteLine("Talde 2 irabazi du partida!");
                 }
             }
+        }
+        private static string LeerRespuestaSegura(Bezeroak b)
+        {
+            string respuesta = b.PlayerReader.ReadLine();
+            if (respuesta == null || respuesta == "ABANDONO" || respuesta == "QUIT")
+            {
+                throw new IOException($"El jugador {b.PlayerZnb} ha abandonado.");
+            }
+            return respuesta;
         }
 
         private static void zeinenTurnDa(Partida partida, Bezeroak jokalaria)
