@@ -379,12 +379,6 @@ namespace Zerbitzaria
 
                 Console.WriteLine($"[Partida {partida.PartidaId}] Amaitu da.");
 
-                foreach (var b in partida.BezeroLista)
-                {
-                    b.PlayerWriter.WriteLine("END_GAME");
-                    b.PlayerWriter.Flush();
-                    b.Client.Close();
-                }
 
                 lock (partidasLock)
                 {
