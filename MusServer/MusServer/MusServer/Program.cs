@@ -41,8 +41,6 @@ namespace Zerbitzaria
             private StreamReader playerReader;
             private TcpClient client;
             private int taldea;
-            public bool esperandoNuevaRonda = false;
-            public bool estaConectado = true;
 
             public Bezeroak(int playerZnb, TcpClient client, int taldea, string id)
             {
@@ -54,15 +52,8 @@ namespace Zerbitzaria
                 playerReader = new StreamReader(stream);
                 this.taldea = taldea;
                 this.id = id;
-                ActualizarSocket(client); // Centralizamos la creación de streams
             }
-            public void ActualizarSocket(TcpClient nuevoClient)
-            {
-                this.client = nuevoClient;
-                this.stream = nuevoClient.GetStream();
-                this.playerWriter = new StreamWriter(stream) { AutoFlush = true };
-                this.playerReader = new StreamReader(stream);
-            }
+
             public int PlayerZnb => playerZnb;
             public TcpClient Client => client;
             public List<string> Eskua => eskua;
@@ -178,20 +169,6 @@ namespace Zerbitzaria
 
                             int taldea = 0;
                             string id = reader.ReadLine();
-                            Partida partidaExistente = BuscarPartidaPorJugadorId(id);
-
-                            if (partidaExistente != null)
-                            {
-                                // Reasignar el nuevo socket al objeto Bezeroak viejo
-                                Bezeroak b = partidaExistente.BezeroLista.Find(x => x.Id == id);
-                                b.ActualizarSocket(client); // Actualiza Client, Reader y Writer
-                                b.estaConectado = true;
-                                b.esperandoNuevaRonda = true; // Flag para que no juegue todavía
-
-                                writer.WriteLine("RECONECTADO_ESPERA");
-                                writer.Flush();
-                                return; // Salimos para no meterlo en una partida nueva
-                            }
                             var bezeroaObj = new Bezeroak(partidaAsignada.Bezeroak, client, taldea, id);
                             partidaAsignada.BezeroLista.Add(bezeroaObj);
                             partidaAsignada.Bezeroak++;
@@ -335,22 +312,6 @@ namespace Zerbitzaria
                 Console.WriteLine($"❌ Error procesando jugador: {ex.Message}");
                 try { client.Close(); } catch { }
             }
-        }
-        private static Partida BuscarPartidaPorJugadorId(string jugadorId)
-        {
-            lock (partidasLock)
-            {
-                // Buscamos en el diccionario de partidas
-                foreach (var partida in partidas.Values)
-                {
-                    // Miramos si algún bezero de esta partida tiene el mismo ID
-                    if (partida.BezeroLista.Any(b => b.Id == jugadorId))
-                    {
-                        return partida;
-                    }
-                }
-            }
-            return null; // Si no está en ninguna partida activa
         }
         private static void EsperarAbandonoEnSala(Partida partida, Bezeroak b)
         {
@@ -522,8 +483,6 @@ namespace Zerbitzaria
             int eskuaZnb = rnd.Next(0, 4);
             int jokalariarenTxanda = (eskuaZnb == 3) ? 0 : eskuaZnb + 1;
 
-            
-
             // 1️⃣ Jokalaria
             Bezeroak jokalaria = partida.BezeroLista.Find(b => b.PlayerZnb == jokalariarenTxanda);
 
@@ -535,16 +494,6 @@ namespace Zerbitzaria
             List<Bezeroak> etsaiLista = partida.BezeroLista
                 .FindAll(b => b.PlayerZnb != jokalariarenTxanda && b.PlayerZnb != taldekideaZnb);
 
-           /* Thread abandonoTThread = new Thread(() => LeerRespuestaSegura(taldekidea, partida));
-            
-            Thread abandonoJThread = new Thread(() => LeerRespuestaSegura(jokalaria, partida));
-            Thread abandonoE1Thread = new Thread(() => LeerRespuestaSegura(etsaiLista[0], partida));
-            Thread abandonoE2Thread = new Thread(() => LeerRespuestaSegura(etsaiLista[1], partida));
-            abandonoE1Thread.Start();
-            abandonoE2Thread.Start();
-            abandonoTThread.Start();
-            abandonoJThread.Start();*/
-
             if (etsaiLista.Count != 2)
                 throw new Exception("Etsaien kopurua ez da 2, begiratu bezeroLista.");
             
@@ -555,17 +504,6 @@ namespace Zerbitzaria
             Console.WriteLine($"Jokalaria: {jokalaria.PlayerZnb}, Taldekidea: {taldekidea.PlayerZnb}, Etsaienak: {lehenEtsai.PlayerZnb}, {bigarrenEtsai.PlayerZnb}");
             while (partida.Talde1Puntuak < 40 && partida.Talde2Puntuak < 40)
             {
-                foreach (var b in partida.BezeroLista)
-                {
-                    if (b.estaConectado && b.esperandoNuevaRonda)
-                    {
-                        Console.WriteLine($"[PARTIDA] Reincorporando al jugador {b.Id} al juego activo.");
-                        b.esperandoNuevaRonda = false;
-
-                        // Opcional: Avisar al cliente que ya puede jugar
-                        try { b.PlayerWriter.WriteLine("ESTADO:ACTIVO"); } catch { }
-                    }
-                }
                 Console.WriteLine($"Talde 1 puntuazioa: {partida.Talde1Puntuak}, Talde 2 puntuazioa: {partida.Talde2Puntuak}");
                 rondaKop++;
                 if(rondaKop > 1)
@@ -590,7 +528,7 @@ namespace Zerbitzaria
                     taldekidea.PlayerWriter.WriteLine("TURN");
                     taldekidea.PlayerWriter.Flush();
                     zeinenTurnDa(partida, taldekidea);
-                    string taldekideErabakia = LeerRespuestaSegura(taldekidea, partida);
+                    string taldekideErabakia = LeerRespuestaSegura(jokalaria, partida);
                     Console.WriteLine($"Taldekidearen erabakia: {taldekidea.PlayerZnb} erabakia: {taldekideErabakia}");
                     mezua = $"{taldekidea.Id};{taldekidea.PlayerZnb};{taldekideErabakia}";
                     mezuaJokalariguztientzat(partida, mezua);
@@ -604,7 +542,7 @@ namespace Zerbitzaria
                         etsai.PlayerWriter.Flush();
                         zeinenTurnDa(partida, etsai);
 
-                        string etsaiErabakia = LeerRespuestaSegura(etsai, partida);
+                        string etsaiErabakia = LeerRespuestaSegura(jokalaria, partida);
                         Console.WriteLine($"Etsai {etsai.PlayerZnb} erabakia: {etsaiErabakia}");
                         mezua = $"{etsai.Id};{etsai.PlayerZnb};{etsaiErabakia}";
                         mezuaJokalariguztientzat(partida, mezua);
@@ -731,20 +669,15 @@ namespace Zerbitzaria
         }
         private static string LeerRespuestaSegura(Bezeroak b, Partida partida)
         {
-            try
+            string respuesta = b.PlayerReader.ReadLine();
+            if (respuesta == null || respuesta == "ABANDONO")
             {
-                // Ponemos un timeout corto para no bloquear el hilo de la partida
-                b.Client.ReceiveTimeout = 5000;
-                string respuesta = b.PlayerReader.ReadLine();
-                if (respuesta == null) throw new Exception();
-                return respuesta;
+                partidas.Remove(partida.PartidaId);
+                throw new IOException($"El jugador {b.PlayerZnb} ha abandonado.");
+                
+                
             }
-            catch
-            {
-                Console.WriteLine($"[Partida {partida.PartidaId}] Jugador {b.Id} seF ha ido. Pasando a modo espera.");
-                b.estaConectado = false; // Añade este booleano a tu clase Bezeroak
-                return "DESCONECTADO";
-            }
+            return respuesta;
         }
 
         private static void zeinenTurnDa(Partida partida, Bezeroak jokalaria)
