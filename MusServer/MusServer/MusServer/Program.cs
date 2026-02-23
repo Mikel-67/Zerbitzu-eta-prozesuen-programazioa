@@ -319,7 +319,6 @@ namespace Zerbitzaria
             {
                 while (partida.Bezeroak < 4 && partida.Bezeroak > 0)
                 {
-                    // Verificamos si hay algo para leer sin bloquearnos eternamente
                     if (b.Client.GetStream().DataAvailable)
                     {
                         string mensaje = b.PlayerReader.ReadLine();
@@ -329,7 +328,6 @@ namespace Zerbitzaria
                         }
                     }
 
-                    // También chequeamos si el socket se rompió físicamente
                     if (b.Client.Client.Poll(10, SelectMode.SelectRead) && b.Client.Client.Available == 0)
                     {
                         throw new Exception("Socket cerrado");
@@ -349,7 +347,6 @@ namespace Zerbitzaria
                     {
                         try
                         {
-                            // Les enviamos END_GAME para que su App los saque de esa pantalla
                             otro.PlayerWriter.WriteLine("END_GAME");
                             otro.PlayerWriter.Flush();
                             otro.Client.Close();
@@ -461,31 +458,20 @@ namespace Zerbitzaria
             }
             finally
             {
+                foreach (var b in partida.BezeroLista)
+                {
+                    try { b.Client.Close(); } catch { }
+                }
+
                 lock (partidasLock)
                 {
                     foreach (var b in partida.BezeroLista)
                     {
-                        try
-                        {
-                            b.PlayerWriter.WriteLine("END_GAME");
-                            b.PlayerWriter.Flush();
-                        }
-                        catch { /* Ya estaba desconectado, no pasa nada */ }
+                        b.PlayerWriter.WriteLine("END_GAME");
                     }
-
-                    foreach (var b in partida.BezeroLista)
-                    {
-                        try { b.Client.Close(); } catch { }
-                    }
-
                     partidas.Remove(partida.PartidaId);
-                    if (partida.EsPrivada)
-                    {
-                        partidasPorCodigo.Remove(partida.Codigo);
-                    }
-
+                    Console.WriteLine($"[Partida {partida.PartidaId}] Eliminada del servidor");
                     partidaKop--;
-                    Console.WriteLine($"[Partida {partida.PartidaId}] Eliminada del servidor. Salas restantes: {partidaKop}");
                 }
             }
         }
@@ -532,7 +518,7 @@ namespace Zerbitzaria
                     jokalaria.PlayerWriter.Flush();
                     zeinenTurnDa(partida, jokalaria);
 
-                    string erabakia = LeerRespuestaSegura(jokalaria);
+                    string erabakia = LeerRespuestaSegura(jokalaria, partida);
                     Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} erabakia: {erabakia}");
                     string mezua = $"{jokalaria.Id};{jokalaria.PlayerZnb};{erabakia}";
                     mezuaJokalariguztientzat(partida, mezua);
@@ -542,7 +528,7 @@ namespace Zerbitzaria
                     taldekidea.PlayerWriter.WriteLine("TURN");
                     taldekidea.PlayerWriter.Flush();
                     zeinenTurnDa(partida, taldekidea);
-                    string taldekideErabakia = LeerRespuestaSegura(taldekidea);
+                    string taldekideErabakia = LeerRespuestaSegura(jokalaria, partida);
                     Console.WriteLine($"Taldekidearen erabakia: {taldekidea.PlayerZnb} erabakia: {taldekideErabakia}");
                     mezua = $"{taldekidea.Id};{taldekidea.PlayerZnb};{taldekideErabakia}";
                     mezuaJokalariguztientzat(partida, mezua);
@@ -556,7 +542,7 @@ namespace Zerbitzaria
                         etsai.PlayerWriter.Flush();
                         zeinenTurnDa(partida, etsai);
 
-                        string etsaiErabakia = LeerRespuestaSegura(etsai);
+                        string etsaiErabakia = LeerRespuestaSegura(jokalaria, partida);
                         Console.WriteLine($"Etsai {etsai.PlayerZnb} erabakia: {etsaiErabakia}");
                         mezua = $"{etsai.Id};{etsai.PlayerZnb};{etsaiErabakia}";
                         mezuaJokalariguztientzat(partida, mezua);
@@ -681,11 +667,12 @@ namespace Zerbitzaria
                 }
             }
         }
-        private static string LeerRespuestaSegura(Bezeroak b)
+        private static string LeerRespuestaSegura(Bezeroak b, Partida partida)
         {
             string respuesta = b.PlayerReader.ReadLine();
-            if (respuesta == null || respuesta == "ABANDONO" || respuesta == "QUIT")
+            if (respuesta == null || respuesta == "ABANDONO")
             {
+                partidas.Remove(partida.PartidaId);
                 throw new IOException($"El jugador {b.PlayerZnb} ha abandonado.");
                 
                 
