@@ -178,7 +178,7 @@ namespace Zerbitzaria
 
                             int taldea = 0;
                             string id = reader.ReadLine();
-                            Partida partidaExistente = BuscarPartidaPorJugadorId(idJugador);
+                            Partida partidaExistente = BuscarPartidaPorJugadorId(id);
 
                             if (partidaExistente != null)
                             {
@@ -186,7 +186,7 @@ namespace Zerbitzaria
                                 Bezeroak b = partidaExistente.BezeroLista.Find(x => x.Id == id);
                                 b.ActualizarSocket(client); // Actualiza Client, Reader y Writer
                                 b.estaConectado = true;
-                                b.EsperandoNuevaRonda = true; // Flag para que no juegue todavía
+                                b.esperandoNuevaRonda = true; // Flag para que no juegue todavía
 
                                 writer.WriteLine("RECONECTADO_ESPERA");
                                 writer.Flush();
