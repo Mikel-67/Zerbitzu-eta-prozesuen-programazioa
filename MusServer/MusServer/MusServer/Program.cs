@@ -461,20 +461,31 @@ namespace Zerbitzaria
             }
             finally
             {
-                foreach (var b in partida.BezeroLista)
-                {
-                    try { b.Client.Close(); } catch { }
-                }
-
                 lock (partidasLock)
                 {
                     foreach (var b in partida.BezeroLista)
                     {
-                        b.PlayerWriter.WriteLine("END_GAME");
+                        try
+                        {
+                            b.PlayerWriter.WriteLine("END_GAME");
+                            b.PlayerWriter.Flush();
+                        }
+                        catch { /* Ya estaba desconectado, no pasa nada */ }
                     }
+
+                    foreach (var b in partida.BezeroLista)
+                    {
+                        try { b.Client.Close(); } catch { }
+                    }
+
                     partidas.Remove(partida.PartidaId);
-                    Console.WriteLine($"[Partida {partida.PartidaId}] Eliminada del servidor");
+                    if (partida.EsPrivada)
+                    {
+                        partidasPorCodigo.Remove(partida.Codigo);
+                    }
+
                     partidaKop--;
+                    Console.WriteLine($"[Partida {partida.PartidaId}] Eliminada del servidor. Salas restantes: {partidaKop}");
                 }
             }
         }
@@ -676,6 +687,8 @@ namespace Zerbitzaria
             if (respuesta == null || respuesta == "ABANDONO" || respuesta == "QUIT")
             {
                 throw new IOException($"El jugador {b.PlayerZnb} ha abandonado.");
+                
+                
             }
             return respuesta;
         }
