@@ -497,9 +497,14 @@ namespace Zerbitzaria
                 .FindAll(b => b.PlayerZnb != jokalariarenTxanda && b.PlayerZnb != taldekideaZnb);
 
             Thread abandonoTThread = new Thread(() => LeerRespuestaSegura(taldekidea, partida));
+            
             Thread abandonoJThread = new Thread(() => LeerRespuestaSegura(jokalaria, partida));
             Thread abandonoE1Thread = new Thread(() => LeerRespuestaSegura(etsaiLista[0], partida));
             Thread abandonoE2Thread = new Thread(() => LeerRespuestaSegura(etsaiLista[1], partida));
+            abandonoE1Thread.Start();
+            abandonoE2Thread.Start();
+            abandonoTThread.Start();
+            abandonoJThread.Start();
 
             if (etsaiLista.Count != 2)
                 throw new Exception("Etsaien kopurua ez da 2, begiratu bezeroLista.");
