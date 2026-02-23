@@ -189,7 +189,7 @@ namespace Zerbitzaria
                             else
                             {
 
-                                Task.Run(() => VigilarDesconexionEnEspera(partidaAsignada, bezeroaObj));
+                                Task.Run(() => EsperarAbandonoEnSala(partidaAsignada, bezeroaObj));
                             }
                         }
                         break;
@@ -313,38 +313,56 @@ namespace Zerbitzaria
                 try { client.Close(); } catch { }
             }
         }
-        private static void VigilarDesconexionEnEspera(Partida partida, Bezeroak b)
+        private static void EsperarAbandonoEnSala(Partida partida, Bezeroak b)
         {
-            while (partida.Bezeroak < 4 && partida.Bezeroak > 0)
+            try
             {
-                if (b.Client.Client.Poll(1000, SelectMode.SelectRead) && b.Client.Available == 0)
+                while (partida.Bezeroak < 4 && partida.Bezeroak > 0)
                 {
-                    Console.WriteLine($"[SALA {partida.PartidaId}] ¡Abandono instantáneo de {b.Id}!");
-
-                    lock (partidasLock)
+                    // Verificamos si hay algo para leer sin bloquearnos eternamente
+                    if (b.Client.GetStream().DataAvailable)
                     {
-                        foreach (var otro in partida.BezeroLista.ToList())
+                        string mensaje = b.PlayerReader.ReadLine();
+                        if (mensaje == "ABANDONO" || mensaje == null)
                         {
-                            try
-                            {
-                                otro.PlayerWriter.WriteLine("END_GAME");
-                                otro.PlayerWriter.Flush();
-                                otro.Client.Close();
-                            }
-                            catch { }
-                        }
-
-                        partida.BezeroLista.Clear();
-                        partida.Bezeroak = 0;
-
-                        if (partida.EsPrivada)
-                        {
-                            partidas.Remove(partida.PartidaId);
+                            throw new Exception("El jugador ha decidido salir");
                         }
                     }
-                    return; // Salimos del hilo
+
+                    // También chequeamos si el socket se rompió físicamente
+                    if (b.Client.Client.Poll(10, SelectMode.SelectRead) && b.Client.Client.Available == 0)
+                    {
+                        throw new Exception("Socket cerrado");
+                    }
+
+                    Thread.Sleep(200);
                 }
-                Thread.Sleep(500); // Revisa cada medio segundo
+            }
+            catch
+            {
+                Console.WriteLine($"[SALA {partida.PartidaId}] Abandono detectado. Reiniciando sala...");
+
+                lock (partidasLock)
+                {
+                    // 1. Avisar a los otros jugadores que la sala se ha roto
+                    foreach (var otro in partida.BezeroLista.ToList())
+                    {
+                        try
+                        {
+                            // Les enviamos END_GAME para que su App los saque de esa pantalla
+                            otro.PlayerWriter.WriteLine("END_GAME");
+                            otro.PlayerWriter.Flush();
+                            otro.Client.Close();
+                        }
+                        catch { }
+                    }
+
+                    // 2. Reiniciar la partida para que quede limpia
+                    partida.BezeroLista.Clear();
+                    partida.Bezeroak = 0;
+
+                    Console.WriteLine($"[SALA {partida.PartidaId}] Sala reiniciada correctamente.");
+                }
             }
         }
 
