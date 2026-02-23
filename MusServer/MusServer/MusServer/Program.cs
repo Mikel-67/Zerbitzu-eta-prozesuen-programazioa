@@ -428,12 +428,7 @@ namespace Zerbitzaria
                     Console.WriteLine($"[Partida {partida.PartidaId}] Enviando info inicial a jugador {b.PlayerZnb}: {info}");
                     b.PlayerWriter.WriteLine("INFO:" + info);
                     b.PlayerWriter.Flush();
-                    string respuesta = b.PlayerReader.ReadLine();
-
-                    if (respuesta == null || respuesta == "ABANDONO")
-                    {
-                        throw new IOException("Un jugador ha abandonado la partida.");
-                    }
+                    
 
                 }
                 Console.WriteLine($"[Partida {partida.PartidaId}] Kartak banatzen...");
