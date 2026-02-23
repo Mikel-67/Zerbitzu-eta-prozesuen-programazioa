@@ -313,51 +313,38 @@ namespace Zerbitzaria
                 try { client.Close(); } catch { }
             }
         }
-        private static void VigilarSalaDeEspera(Partida partida, Bezeroak bezeroa)
+        private static void VigilarDesconexionEnEspera(Partida partida, Bezeroak b)
         {
-            try
+            while (partida.Bezeroak < 4 && partida.Bezeroak > 0)
             {
-                // Mientras la partida no haya empezado
-                while (partida.Bezeroak < 4)
+                if (b.Client.Client.Poll(1000, SelectMode.SelectRead) && b.Client.Available == 0)
                 {
-                    if (bezeroa.Client.Client.Poll(1000, SelectMode.SelectRead) && bezeroa.Client.Available == 0)
-                    {
-                        throw new Exception("Jugador abandonó");
-                    }
-                    Thread.Sleep(1000);
-                }
-            }
-            catch
-            {
-                Console.WriteLine($"[SALA {partida.PartidaId}] ¡ABANDONO DETECTADO! Limpiando...");
+                    Console.WriteLine($"[SALA {partida.PartidaId}] ¡Abandono instantáneo de {b.Id}!");
 
-                lock (partidasLock)
-                {
-                    foreach (var b in partida.BezeroLista.ToList())
+                    lock (partidasLock)
                     {
-                        try
+                        foreach (var otro in partida.BezeroLista.ToList())
                         {
-                            b.PlayerWriter.WriteLine("END_GAME");
-                            b.PlayerWriter.Flush();
-                            b.Client.Close();
+                            try
+                            {
+                                otro.PlayerWriter.WriteLine("END_GAME");
+                                otro.PlayerWriter.Flush();
+                                otro.Client.Close();
+                            }
+                            catch { }
                         }
-                        catch { }
-                    }
 
-                    partida.BezeroLista.Clear();
-                    partida.Bezeroak = 0;
+                        partida.BezeroLista.Clear();
+                        partida.Bezeroak = 0;
 
-                    if (partida.EsPrivada)
-                    {
-                        partidas.Remove(partida.PartidaId);
-                        partidasPorCodigo.Remove(partida.Codigo);
-                        Console.WriteLine($"Sala privada {partida.Codigo} eliminada por abandono.");
+                        if (partida.EsPrivada)
+                        {
+                            partidas.Remove(partida.PartidaId);
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine($"Sala pública {partida.PartidaId} reseteada.");
-                    }
+                    return; // Salimos del hilo
                 }
+                Thread.Sleep(500); // Revisa cada medio segundo
             }
         }
 
