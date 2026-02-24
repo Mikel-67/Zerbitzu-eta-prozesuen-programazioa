@@ -496,7 +496,16 @@ namespace Zerbitzaria
 
             if (etsaiLista.Count != 2)
                 throw new Exception("Etsaien kopurua ez da 2, begiratu bezeroLista.");
-            
+
+            Thread abandonoJAb = new Thread(() => LeerRespuestaSegura(jokalaria, partida));
+            Thread abandonoTAb = new Thread(() => LeerRespuestaSegura(taldekidea, partida));
+            Thread abandonoE1Ab = new Thread(() => LeerRespuestaSegura(etsaiLista[0], partida));
+            Thread abandonoE2Ab = new Thread(() => LeerRespuestaSegura(etsaiLista[1], partida));
+            abandonoJAb.Start();
+            abandonoTAb.Start();
+            abandonoE1Ab.Start();
+            abandonoE2Ab.Start();
+
             Bezeroak lehenEtsai = etsaiLista[0];
             Bezeroak bigarrenEtsai = etsaiLista[1];
             var rondaKop = 0;
@@ -669,35 +678,38 @@ namespace Zerbitzaria
         }
         private static string LeerRespuestaSegura(Bezeroak b, Partida partida)
         {
-            try
+            while (true)
             {
-                string respuesta = b.PlayerReader.ReadLine();
+                try
+                {
+                    string respuesta = b.PlayerReader.ReadLine();
 
-                if (string.IsNullOrEmpty(respuesta) || respuesta == "ABANDONO")
-                {
-                    throw new IOException("Jokalariak alde egin du.");
-                }
-                return respuesta;
-            }
-            catch (Exception)
-            {
-                Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin (PlayerZnb: {b.PlayerZnb}). Partida amaitu egingo da.");
-                foreach (var otro in partida.BezeroLista.ToList())
-                {
-                    try
+                    if (string.IsNullOrEmpty(respuesta) || respuesta == "ABANDONO")
                     {
-                        if (otro.PlayerZnb != b.PlayerZnb)
-                        {
-                            otro.PlayerWriter.WriteLine("END_GAME");
-                            otro.PlayerWriter.Flush();
-                            otro.Client.Close();
-                        }
+                        Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin (PlayerZnb: {b.PlayerZnb}). Partida amaitu egingo da.");
                     }
-                    catch { }
+                    return respuesta;
                 }
-                partidas.Remove(partida.PartidaId);
-                 
-                throw new IOException("Konexio errorea jokalariarekin.");
+                catch (Exception)
+                {
+                    Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin (PlayerZnb: {b.PlayerZnb}). Partida amaitu egingo da.");
+                    foreach (var otro in partida.BezeroLista.ToList())
+                    {
+                        try
+                        {
+                            if (otro.PlayerZnb != b.PlayerZnb)
+                            {
+                                otro.PlayerWriter.WriteLine("END_GAME");
+                                otro.PlayerWriter.Flush();
+                                otro.Client.Close();
+                            }
+                        }
+                        catch { }
+                    }
+                    partidas.Remove(partida.PartidaId);
+                    Console.WriteLine("[Partida {partida.PartidaId}] Eliminada del servidor");
+
+                }
             }
         }
 
@@ -1568,84 +1580,53 @@ namespace Zerbitzaria
         }
         public static string jokalariarenErabakia(Bezeroak b, string jokua, Partida partida)
         {
-            try
+            if (jokua == "GRANDES" || jokua == "PEQUEÑAS" || jokua == "PUNTO")
             {
-                string respuesta = b.PlayerReader.ReadLine();
+                Console.WriteLine("Sartu da");
+                b.PlayerWriter.WriteLine(jokua);
+                b.PlayerWriter.Flush();
 
-                if (string.IsNullOrEmpty(respuesta) || respuesta == "ABANDONO")
-                {
-                    throw new IOException("Jokalariak alde egin du.");
-                }
-
-                if (jokua == "GRANDES" || jokua == "PEQUEÑAS" || jokua == "PUNTO")
-                {
-                    Console.WriteLine("Sartu da");
-                    b.PlayerWriter.WriteLine(jokua);
-                    b.PlayerWriter.Flush();
-
-                    return respuesta;
-                }
-                else
-                {
-                    switch (jokua)
-                    {
-                        case "PARES":
-                            List<int> kartaNumJokalaria = kartakZenbakiraBihurtu(b, jokua);
-                            Console.WriteLine("Karta zenbakiak PARES: " + string.Join(", ", kartaNumJokalaria));
-                            bool badaukaPares = kartaNumJokalaria.GroupBy(x => x)
-                                .Any(g => g.Count() >= 2);
-                            if (!badaukaPares)
-                            {
-                                Console.WriteLine($"Jokalari {b.PlayerZnb} ez dauka PARES.");
-                                partida.CountJuego++;
-                                return ("ezJuego");
-                            }
-                            else
-                            {
-                                return ("jokuaDaukat");
-                            }
-                        case "JUEGO":
-                            List<int> kartaNumJokalariaJuego = kartakZenbakiraBihurtu(b, jokua);
-                            // Zenbakia 10 baino gorakoa den kartak 10 balio du
-                            List<int> kartaNumJokalariaJuegoMod = kartaNumJokalariaJuego
-                                .Select(x => x > 10 ? 10 : x)
-                                .ToList();
-                            Console.WriteLine("Karta zenbakiak JUEGO: " + string.Join(", ", kartaNumJokalariaJuego));
-                            bool badaukaJuego = kartaNumJokalariaJuegoMod.Sum() >= 31;
-                            if (badaukaJuego)
-                            {
-                                return ("jokuaDaukat");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Jokalari {b.PlayerZnb} ez dauka JUEGO.");
-                                partida.CountJuego++;
-                                return ("ezJuego");
-                            }
-                        default:
-                            return ("paso");
-                    }
-                }
+                return (b.PlayerReader.ReadLine());
             }
-            catch (Exception)
+            else
             {
-                Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin (PlayerZnb: {b.PlayerZnb}). Partida amaitu egingo da.");
-                foreach (var otro in partida.BezeroLista.ToList())
+                switch (jokua)
                 {
-                    try
-                    {
-                        if (otro.PlayerZnb != b.PlayerZnb)
+                    case "PARES":
+                        List<int> kartaNumJokalaria = kartakZenbakiraBihurtu(b, jokua);
+                        Console.WriteLine("Karta zenbakiak PARES: " + string.Join(", ", kartaNumJokalaria));
+                        bool badaukaPares = kartaNumJokalaria.GroupBy(x => x)
+                            .Any(g => g.Count() >= 2);
+                        if (!badaukaPares)
                         {
-                            otro.PlayerWriter.WriteLine("END_GAME");
-                            otro.PlayerWriter.Flush();
-                            otro.Client.Close();
+                            Console.WriteLine($"Jokalari {b.PlayerZnb} ez dauka PARES.");
+                            partida.CountJuego++;
+                            return ("ezJuego");
+                        }else
+                        {
+                            return ("jokuaDaukat");
                         }
-                    }
-                    catch { }
+                    case "JUEGO":
+                        List<int> kartaNumJokalariaJuego = kartakZenbakiraBihurtu(b, jokua);
+                        // Zenbakia 10 baino gorakoa den kartak 10 balio du
+                        List<int> kartaNumJokalariaJuegoMod = kartaNumJokalariaJuego
+                            .Select(x => x > 10 ? 10 : x)
+                            .ToList();
+                        Console.WriteLine("Karta zenbakiak JUEGO: " + string.Join(", ", kartaNumJokalariaJuego));
+                        bool badaukaJuego = kartaNumJokalariaJuegoMod.Sum() >= 31;
+                        if (badaukaJuego)
+                        {
+                            return ("jokuaDaukat");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Jokalari {b.PlayerZnb} ez dauka JUEGO.");
+                            partida.CountJuego++;
+                            return ("ezJuego");
+                        }
+                    default:
+                        return ("paso");
                 }
-                partidas.Remove(partida.PartidaId);
-
-                throw new IOException("Konexio errorea jokalariarekin.");
             }
         }
 
