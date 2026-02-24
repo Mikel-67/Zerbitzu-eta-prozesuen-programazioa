@@ -510,12 +510,12 @@ namespace Zerbitzaria
                 {
                     KartakBanatu(partida);
                 }
-
-
-                while (true)
+                try
                 {
-                    try
+
+                    while (true)
                     {
+
                         jokalaria.PlayerWriter.WriteLine("TURN");
                         jokalaria.PlayerWriter.Flush();
                         zeinenTurnDa(partida, jokalaria);
@@ -593,21 +593,7 @@ namespace Zerbitzaria
                             break;
                         }
                     }
-                    catch (Exception e)
-                    {
-                        foreach (var b in partida.BezeroLista)
-                        {
-                            try
-                            {
-                                b.PlayerWriter.WriteLine("END_GAME");
-                                b.PlayerWriter.Flush();
-                                b.Client.Close();
-                            }
-                            catch { }
-                        }
-                        partidas.Remove(partida.PartidaId);
-                        Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin. Partida amaitu egingo da.");
-                    }
+
                     foreach (var b in partida.BezeroLista)
                     {
                         b.PlayerWriter.WriteLine("RONDA:HANDIAK");
@@ -670,6 +656,22 @@ namespace Zerbitzaria
 
 
                     }
+                }
+                catch (Exception e)
+                {
+                    foreach (var b in partida.BezeroLista)
+                    {
+                        try
+                        {
+                            b.PlayerWriter.WriteLine("END_GAME");
+                            b.PlayerWriter.Flush();
+                            b.Client.Close();
+                        }
+                        catch { }
+                    }
+                    partidas.Remove(partida.PartidaId);
+                    Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin. Partida amaitu egingo da.");
+                }
                     partida.CountJuego = 0;
                     goto CheckBukatu;
                 CheckBukatu:
