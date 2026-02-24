@@ -1552,10 +1552,7 @@ namespace Zerbitzaria
                 Console.WriteLine("Sartu da");
                 b.PlayerWriter.WriteLine(jokua);
                 b.PlayerWriter.Flush();
-                if(b.PlayerReader.ReadLine() == "ABANDONO")
-                {
-                    throw new Exception($"Jokalari {b.PlayerZnb} abandona la partida.");
-                }
+
                 return (b.PlayerReader.ReadLine());
             }
             else
