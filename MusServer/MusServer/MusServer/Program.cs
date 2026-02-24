@@ -681,12 +681,22 @@ namespace Zerbitzaria
             }
             catch (Exception)
             {
-                partidas.Remove(partida.PartidaId);
-                 if (partida.EsPrivada)
+                Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin (PlayerZnb: {b.PlayerZnb}). Partida amaitu egingo da.");
+                foreach (var otro in partida.BezeroLista.ToList())
                 {
-                    partidasPorCodigo.Remove(partida.Codigo);
-                    Console.WriteLine($"🔓 Sala privada {partida.Codigo} eliminada");
+                    try
+                    {
+                        if (otro.PlayerZnb != b.PlayerZnb)
+                        {
+                            otro.PlayerWriter.WriteLine("END_GAME");
+                            otro.PlayerWriter.Flush();
+                            otro.Client.Close();
+                        }
+                    }
+                    catch { }
                 }
+                partidas.Remove(partida.PartidaId);
+                 
                 throw new IOException("Konexio errorea jokalariarekin.");
             }
         }
