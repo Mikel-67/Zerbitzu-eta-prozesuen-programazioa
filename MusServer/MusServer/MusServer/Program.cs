@@ -684,7 +684,7 @@ namespace Zerbitzaria
                         Console.WriteLine("Talde 2 irabazi du partida!");
                     }
                 }
-            }
+            
         }
         private static string LeerRespuestaSegura(Bezeroak b, Partida partida)
         {
