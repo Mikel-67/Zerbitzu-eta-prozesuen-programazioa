@@ -686,6 +686,21 @@ namespace Zerbitzaria
 
                     if (string.IsNullOrEmpty(respuesta) || respuesta == "ABANDONO")
                     {
+                        foreach (var otro in partida.BezeroLista.ToList())
+                        {
+                            try
+                            {
+                                if (otro.PlayerZnb != b.PlayerZnb)
+                                {
+                                    otro.PlayerWriter.WriteLine("END_GAME");
+                                    otro.PlayerWriter.Flush();
+                                    otro.Client.Close();
+                                }
+                            }
+                            catch { }
+                        }
+                        partidas.Remove(partida.PartidaId);
+
                         Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin (PlayerZnb: {b.PlayerZnb}). Partida amaitu egingo da.");
                     }
                     return respuesta;
