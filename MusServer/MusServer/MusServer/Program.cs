@@ -1570,13 +1570,20 @@ namespace Zerbitzaria
         {
             try
             {
+                string respuesta = b.PlayerReader.ReadLine();
+
+                if (string.IsNullOrEmpty(respuesta) || respuesta == "ABANDONO")
+                {
+                    throw new IOException("Jokalariak alde egin du.");
+                }
+
                 if (jokua == "GRANDES" || jokua == "PEQUEÑAS" || jokua == "PUNTO")
                 {
                     Console.WriteLine("Sartu da");
                     b.PlayerWriter.WriteLine(jokua);
                     b.PlayerWriter.Flush();
 
-                    return (b.PlayerReader.ReadLine());
+                    return respuesta;
                 }
                 else
                 {
