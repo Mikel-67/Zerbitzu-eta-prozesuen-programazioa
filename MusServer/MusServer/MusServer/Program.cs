@@ -518,7 +518,7 @@ namespace Zerbitzaria
                     jokalaria.PlayerWriter.Flush();
                     zeinenTurnDa(partida, jokalaria);
 
-                    string erabakia = LeerRespuestaSegura(jokalaria);
+                    string erabakia = LeerRespuestaSegura(jokalaria, partida);
                     Console.WriteLine($"Jokalari {jokalaria.PlayerZnb} erabakia: {erabakia}");
                     string mezua = $"{jokalaria.Id};{jokalaria.PlayerZnb};{erabakia}";
                     mezuaJokalariguztientzat(partida, mezua);
@@ -528,7 +528,7 @@ namespace Zerbitzaria
                     taldekidea.PlayerWriter.WriteLine("TURN");
                     taldekidea.PlayerWriter.Flush();
                     zeinenTurnDa(partida, taldekidea);
-                    string taldekideErabakia = LeerRespuestaSegura(jokalaria);
+                    string taldekideErabakia = LeerRespuestaSegura(jokalaria, partida);
                     Console.WriteLine($"Taldekidearen erabakia: {taldekidea.PlayerZnb} erabakia: {taldekideErabakia}");
                     mezua = $"{taldekidea.Id};{taldekidea.PlayerZnb};{taldekideErabakia}";
                     mezuaJokalariguztientzat(partida, mezua);
@@ -542,7 +542,7 @@ namespace Zerbitzaria
                         etsai.PlayerWriter.Flush();
                         zeinenTurnDa(partida, etsai);
 
-                        string etsaiErabakia = LeerRespuestaSegura(jokalaria);
+                        string etsaiErabakia = LeerRespuestaSegura(jokalaria, partida);
                         Console.WriteLine($"Etsai {etsai.PlayerZnb} erabakia: {etsaiErabakia}");
                         mezua = $"{etsai.Id};{etsai.PlayerZnb};{etsaiErabakia}";
                         mezuaJokalariguztientzat(partida, mezua);
@@ -667,7 +667,7 @@ namespace Zerbitzaria
                 }
             }
         }
-        private static string LeerRespuestaSegura(Bezeroak b)
+        private static string LeerRespuestaSegura(Bezeroak b, Partida partida)
         {
             try
             {
@@ -681,6 +681,12 @@ namespace Zerbitzaria
             }
             catch (Exception)
             {
+                partidas.Remove(partida.PartidaId);
+                 if (partida.EsPrivada)
+                {
+                    partidasPorCodigo.Remove(partida.Codigo);
+                    Console.WriteLine($"🔓 Sala privada {partida.Codigo} eliminada");
+                }
                 throw new IOException("Konexio errorea jokalariarekin.");
             }
         }
