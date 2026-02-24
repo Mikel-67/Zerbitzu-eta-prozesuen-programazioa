@@ -496,16 +496,7 @@ namespace Zerbitzaria
 
             if (etsaiLista.Count != 2)
                 throw new Exception("Etsaien kopurua ez da 2, begiratu bezeroLista.");
-
-            // Lanzar  en paralelo
-            foreach (var b in partida.BezeroLista)
-            {
-                Thread v = new Thread(() => VigilarAbandonoContinuo(b, partida));
-                v.IsBackground = true; // Para que no bloqueen el cierre del servidor
-                v.Start();
-            }
-
-
+            
             Bezeroak lehenEtsai = etsaiLista[0];
             Bezeroak bigarrenEtsai = etsaiLista[1];
             var rondaKop = 0;
@@ -523,6 +514,7 @@ namespace Zerbitzaria
 
                 while (true)
                 {
+                    try { 
                     jokalaria.PlayerWriter.WriteLine("TURN");
                     jokalaria.PlayerWriter.Flush();
                     zeinenTurnDa(partida, jokalaria);
@@ -599,7 +591,22 @@ namespace Zerbitzaria
                     {
                         break;
                     }
-                }
+                    }
+                    catch (Exception e)
+                    {
+                        foreach (var b in partida.BezeroLista)
+                        {
+                            try
+                            {
+                                b.PlayerWriter.WriteLine("END_GAME");
+                                b.PlayerWriter.Flush();
+                                b.Client.Close();
+                            }
+                            catch { }
+                        }
+                        partidas.Remove(partida.PartidaId);
+                        Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin. Partida amaitu egingo da.");
+                    }
                 foreach (var b in partida.BezeroLista)
                 {
                     b.PlayerWriter.WriteLine("RONDA:HANDIAK");
@@ -683,80 +690,16 @@ namespace Zerbitzaria
 
                 if (string.IsNullOrEmpty(respuesta) || respuesta == "ABANDONO")
                 {
-                    FinalizarPartidaPorError(partida, b.PlayerZnb);
-                    return null; 
+                    throw new IOException("Jokalariak alde egin du.");
                 }
-
                 return respuesta;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"[Error Crítico] {ex.Message}");
-                FinalizarPartidaPorError(partida, b.PlayerZnb);
-                return null;
-            }
-        }
-
-        private static void FinalizarPartidaPorError(Partida partida, int playerIdHuerfano)
-        {
-            Console.WriteLine($"[Partida {partida.PartidaId}] Cerrando partida por error/abandono del jugador {playerIdHuerfano}.");
-
-            foreach (var otro in partida.BezeroLista.ToList())
-            {
-                try
-                {
-                    if (otro.PlayerZnb != playerIdHuerfano)
-                    {
-                        otro.PlayerWriter.WriteLine("END_GAME");
-                        otro.PlayerWriter.Flush();
-                        otro.Client.Close();
-                    }
-                }
-                catch { /* Ignorar errores al cerrar otros clientes */ }
-            }
-
-            partidas.Remove(partida.PartidaId);
-            Console.WriteLine($"[Partida {partida.PartidaId}] Eliminada del servidor.");
-        }
-        private static void VigilarAbandonoContinuo(Bezeroak b, Partida partida)
-        {
-            try
-            {
-                while (partidas.ContainsKey(partida.PartidaId) && b.Client.Connected)
-                {
-                    // Poll detecta si el socket se ha cerrado sin intentar leer los datos
-                    if (b.Client.Client.Poll(1000, SelectMode.SelectRead) && b.Client.Available == 0)
-                    {
-                        throw new Exception("Socket cerrado inesperadamente");
-                    }
-                    Thread.Sleep(1000);
-                }
-            }
-            catch
-            {
-                FinalizarPartidaPorAbandono(partida, b);
-            }
-        }
-
-        private static void FinalizarPartidaPorAbandono(Partida partida, Bezeroak culpable)
-        {
-            lock (partidasLock)
-            {
-                if (!partidas.ContainsKey(partida.PartidaId)) return;
-
-                Console.WriteLine($"[SALA {partida.PartidaId}] Abandono detectado por {culpable.Id}. Cerrando...");
-
-                foreach (var b in partida.BezeroLista.ToList())
-                {
-                    try
-                    {
-                        b.PlayerWriter.WriteLine("END_GAME");
-                        b.PlayerWriter.Flush();
-                        b.Client.Close();
-                    }
-                    catch { }
-                }
+                Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin (PlayerZnb: {b.PlayerZnb}). Partida amaitu egingo da.");
                 partidas.Remove(partida.PartidaId);
+                 
+                throw new IOException("Konexio errorea jokalariarekin.");
             }
         }
 
