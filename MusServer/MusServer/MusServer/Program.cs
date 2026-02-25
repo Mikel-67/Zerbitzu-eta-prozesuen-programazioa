@@ -431,7 +431,7 @@ namespace Zerbitzaria
                 Console.WriteLine($"[Partida {partida.PartidaId}] Kartak banatzen...");
                 KartakBanatu(partida);
 
-                Thread.Sleep(2000);
+                Thread.Sleep(5000);
                 PartidaHasi(partida);
 
                 Console.WriteLine($"[Partida {partida.PartidaId}] Amaitu da.");
@@ -530,7 +530,7 @@ namespace Zerbitzaria
                         taldekidea.PlayerWriter.WriteLine("TURN");
                         taldekidea.PlayerWriter.Flush();
                         zeinenTurnDa(partida, taldekidea);
-                        string taldekideErabakia = LeerRespuestaSegura(jokalaria, partida);
+                        string taldekideErabakia = LeerRespuestaSegura(taldekidea, partida);
                         Console.WriteLine($"Taldekidearen erabakia: {taldekidea.PlayerZnb} erabakia: {taldekideErabakia}");
                         mezua = $"{taldekidea.Id};{taldekidea.PlayerZnb};{taldekideErabakia}";
                         mezuaJokalariguztientzat(partida, mezua);
@@ -544,7 +544,7 @@ namespace Zerbitzaria
                             etsai.PlayerWriter.Flush();
                             zeinenTurnDa(partida, etsai);
 
-                            string etsaiErabakia = LeerRespuestaSegura(jokalaria, partida);
+                            string etsaiErabakia = LeerRespuestaSegura(etsai, partida);
                             Console.WriteLine($"Etsai {etsai.PlayerZnb} erabakia: {etsaiErabakia}");
                             mezua = $"{etsai.Id};{etsai.PlayerZnb};{etsaiErabakia}";
                             mezuaJokalariguztientzat(partida, mezua);
@@ -602,7 +602,7 @@ namespace Zerbitzaria
                     Thread.Sleep(2000);
 
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "GRANDES", partida);
-                    Thread.Sleep(2000);
+                    Thread.Sleep(5000);
 
                     if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
                     foreach (var b in partida.BezeroLista)
@@ -610,7 +610,7 @@ namespace Zerbitzaria
                         b.PlayerWriter.WriteLine("RONDA:TXIKIAK");
                         b.PlayerWriter.Flush();
                     }
-                    Thread.Sleep(2000);
+                    Thread.Sleep(5000);
 
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PEQUEÑAS", partida);
 
@@ -620,7 +620,7 @@ namespace Zerbitzaria
                         b.PlayerWriter.WriteLine("RONDA:PAREAK");
                         b.PlayerWriter.Flush();
                     }
-                    Thread.Sleep(2000);
+                    Thread.Sleep(5000);
 
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PARES", partida);
 
@@ -631,7 +631,7 @@ namespace Zerbitzaria
                         b.PlayerWriter.WriteLine("RONDA:JOKUA");
                         b.PlayerWriter.Flush();
                     }
-                    Thread.Sleep(2000);
+                    Thread.Sleep(5000);
 
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "JUEGO", partida);
 
@@ -644,10 +644,10 @@ namespace Zerbitzaria
                             b.PlayerWriter.Flush();
                         }
                         partida.CountJuego = 0;
-                        Thread.Sleep(2000);
+                        Thread.Sleep(5000);
 
                         EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PUNTO", partida);
-                        Thread.Sleep(2000);
+                        Thread.Sleep(5000);
                         foreach (var b in partida.BezeroLista)
                         {
                             b.PlayerWriter.WriteLine("RONDA:AMAIERA");
