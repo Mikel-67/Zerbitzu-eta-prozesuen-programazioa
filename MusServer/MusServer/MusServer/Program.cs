@@ -1567,6 +1567,7 @@ namespace Zerbitzaria
                         Console.WriteLine($"Deskartatuta dagoen karta: {karta}");
                         partida.DeskarteBaraja.Add(karta);
                         jokalaria.Eskua.Remove(karta);
+                        Console.WriteLine("kartak: " + string.Join(", ", jokalaria.Eskua));
                     }
                 }
             }
