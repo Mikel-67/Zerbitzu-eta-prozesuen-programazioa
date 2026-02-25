@@ -508,6 +508,7 @@ namespace Zerbitzaria
                 rondaKop++;
                 if (rondaKop > 1)
                 {
+                    partida.Baraja = KartakSortu();
                     KartakBanatu(partida);
                 }
                 try
@@ -634,6 +635,7 @@ namespace Zerbitzaria
                     Thread.Sleep(5000);
 
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "JUEGO", partida);
+
 
                     if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
                     if (partida.CountJuego == 4)
@@ -1567,9 +1569,10 @@ namespace Zerbitzaria
                         Console.WriteLine($"Deskartatuta dagoen karta: {karta}");
                         partida.DeskarteBaraja.Add(karta);
                         jokalaria.Eskua.Remove(karta);
-                        Console.WriteLine("kartak: " + string.Join(", ", jokalaria.Eskua));
                     }
                 }
+                Console.WriteLine("kartak: " + string.Join(", ", jokalaria.Eskua));
+
             }
             return deskartatutakoKartak.Count(k => !string.IsNullOrEmpty(k));
         }
