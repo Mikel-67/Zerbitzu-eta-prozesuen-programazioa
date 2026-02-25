@@ -649,9 +649,12 @@ namespace Zerbitzaria
                         Thread.Sleep(5000);
 
                         EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PUNTO", partida);
+
                         Thread.Sleep(5000);
                         foreach (var b in partida.BezeroLista)
+
                         {
+
                             b.PlayerWriter.WriteLine("RONDA:AMAIERA");
                             b.PlayerWriter.Flush();
                         }
@@ -1047,7 +1050,12 @@ namespace Zerbitzaria
                                     kartakZenbakiraBihurtu(etsai1,jokua),
                                     kartakZenbakiraBihurtu(etsai2,jokua) });
                             }
-                                partida.Talde2Puntuak += talde1EnvidoKop > 0 ? totala - azkenEnvido : 1;
+                            foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
+                            {
+                                b.PlayerWriter.WriteLine("LABURPENA:" + jokua + "," + totala + ",1");
+                            }
+
+                            partida.Talde2Puntuak += talde1EnvidoKop > 0 ? totala - azkenEnvido : 1;
                         }
                         else
                         {
@@ -1065,6 +1073,10 @@ namespace Zerbitzaria
                                     kartakZenbakiraBihurtu(etsai1,jokua),
                                     kartakZenbakiraBihurtu(etsai2,jokua) });
                                 partida.Talde2Puntuak += totala;
+                                foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
+                                {
+                                    b.PlayerWriter.WriteLine("LABURPENA:" + jokua + "," + totala + ",1");
+                                }
                             }
                             else
                             {
@@ -1076,6 +1088,7 @@ namespace Zerbitzaria
                                 {
                                     partida.Talde2Puntuak += 1;
                                 }
+
                             }
                         }
 
@@ -1145,7 +1158,11 @@ namespace Zerbitzaria
                                     kartakZenbakiraBihurtu(jokalaria,jokua),
                                     kartakZenbakiraBihurtu(taldekidea,jokua) });
                             }
-                                partida.Talde1Puntuak += talde2EnvidoKop > 0 ? totala - azkenEnvido : 1;
+                            foreach (var b in new Bezeroak[] { jokalaria, taldekidea, etsai1, etsai2 })
+                            {
+                                b.PlayerWriter.WriteLine("LABURPENA:" + jokua + "," + totala + ",2");
+                            }
+                            partida.Talde1Puntuak += talde2EnvidoKop > 0 ? totala - azkenEnvido : 1;
                         }
                         else
                         {
