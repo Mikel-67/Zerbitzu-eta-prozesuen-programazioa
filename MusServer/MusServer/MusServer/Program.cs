@@ -508,6 +508,7 @@ namespace Zerbitzaria
                 rondaKop++;
                 if (rondaKop > 1)
                 {
+                    Thread.Sleep(5000);
                     partida.Baraja = KartakSortu();
                     KartakBanatu(partida);
                 }
@@ -603,8 +604,7 @@ namespace Zerbitzaria
                     Thread.Sleep(2000);
 
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "GRANDES", partida);
-                    Thread.Sleep(5000);
-
+                    
                     if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
                     foreach (var b in partida.BezeroLista)
                     {
@@ -614,7 +614,7 @@ namespace Zerbitzaria
                     Thread.Sleep(5000);
 
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PEQUEÑAS", partida);
-
+                    
                     if (partida.Talde1Puntuak >= 99999 || partida.Talde2Puntuak >= 99999) goto CheckBukatu;
                     foreach (var b in partida.BezeroLista)
                     {
