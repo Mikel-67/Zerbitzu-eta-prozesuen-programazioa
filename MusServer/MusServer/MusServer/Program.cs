@@ -761,6 +761,7 @@ namespace Zerbitzaria
                 string e3 = null;
                 string e4 = null;
                 string mezua = null;
+                partida.CountJuego = 0;
 
                 // ✅ Para PARES y JUEGO, primero verificar quién tiene juego válido
                 if (jokua == "PARES" || jokua == "JUEGO")
