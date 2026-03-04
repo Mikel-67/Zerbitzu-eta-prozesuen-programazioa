@@ -78,6 +78,7 @@ namespace Zerbitzaria
         private static int nextPartidaId = 0;
         private static object partidasLock = new object();
         private static int partidaKop = 0;
+        private static bool jokoaDago = false;
 
         private static Partida CrearPartida(string codigo = null)
         {
@@ -622,7 +623,7 @@ namespace Zerbitzaria
                         b.PlayerWriter.WriteLine("RONDA:PAREAK");
                         b.PlayerWriter.Flush();
                     }
-                    Thread.Sleep(5000);
+                    Thread.Sleep(3000);
 
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PARES", partida);
 
@@ -633,7 +634,7 @@ namespace Zerbitzaria
                         b.PlayerWriter.WriteLine("RONDA:JOKUA");
                         b.PlayerWriter.Flush();
                     }
-                    Thread.Sleep(2000);
+                    Thread.Sleep(3000);
 
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "JUEGO", partida);
 
@@ -764,39 +765,43 @@ namespace Zerbitzaria
                 partida.CountJuego = 0;
 
                 // ✅ Para PARES y JUEGO, primero verificar quién tiene juego válido
-                if (jokua == "PARES" || jokua == "JUEGO")
+                if (!jokoaDago)
                 {
-                    e1 = jokalariarenErabakia(jokalaria, jokua, partida);
-                    if (e1 == "jokuaDaukat")
+                    if (jokua == "PARES" || jokua == "JUEGO")
                     {
-                        talde1Jokua = true;
-                    }
-                    mezua = $"{jokalaria.Id};{jokalaria.PlayerZnb};{e1}";
-                    mezuaJokalariguztientzat(partida, mezua, jokua);
+                        e1 = jokalariarenErabakia(jokalaria, jokua, partida);
+                        if (e1 == "jokuaDaukat")
+                        {
+                            talde1Jokua = true;
+                        }
+                        mezua = $"{jokalaria.Id};{jokalaria.PlayerZnb};{e1}";
+                        mezuaJokalariguztientzat(partida, mezua, jokua);
 
-                    e2 = jokalariarenErabakia(etsai1, jokua, partida);
-                    if (e2 == "jokuaDaukat")
-                    {
-                        talde2Jokua = true;
-                    }
-                    mezua = $"{etsai1.Id};{etsai1.PlayerZnb};{e2}";
-                    mezuaJokalariguztientzat(partida, mezua, jokua);
+                        e2 = jokalariarenErabakia(etsai1, jokua, partida);
+                        if (e2 == "jokuaDaukat")
+                        {
+                            talde2Jokua = true;
+                        }
+                        mezua = $"{etsai1.Id};{etsai1.PlayerZnb};{e2}";
+                        mezuaJokalariguztientzat(partida, mezua, jokua);
 
-                    e3 = jokalariarenErabakia(taldekidea, jokua, partida);
-                    if (e3 == "jokuaDaukat")
-                    {
-                        talde1Jokua = true;
-                    }
-                    mezua = $"{taldekidea.Id};{taldekidea.PlayerZnb};{e3}";
-                    mezuaJokalariguztientzat(partida, mezua, jokua);
+                        e3 = jokalariarenErabakia(taldekidea, jokua, partida);
+                        if (e3 == "jokuaDaukat")
+                        {
+                            talde1Jokua = true;
+                        }
+                        mezua = $"{taldekidea.Id};{taldekidea.PlayerZnb};{e3}";
+                        mezuaJokalariguztientzat(partida, mezua, jokua);
 
-                    e4 = jokalariarenErabakia(etsai2, jokua, partida);
-                    if (e4 == "jokuaDaukat")
-                    {
-                        talde2Jokua = true;
+                        e4 = jokalariarenErabakia(etsai2, jokua, partida);
+                        if (e4 == "jokuaDaukat")
+                        {
+                            talde2Jokua = true;
+                        }
+                        mezua = $"{etsai2.Id};{etsai2.PlayerZnb};{e4}";
+                        mezuaJokalariguztientzat(partida, mezua, jokua);
                     }
-                    mezua = $"{etsai2.Id};{etsai2.PlayerZnb};{e4}";
-                    mezuaJokalariguztientzat(partida, mezua, jokua);
+                    jokoaDago = true;
                 }
 
                 // ✅ JOKALARIA - Solo preguntar si tiene juego o si es GRANDES/PEQUEÑAS/PUNTO
