@@ -78,8 +78,6 @@ namespace Zerbitzaria
         private static int nextPartidaId = 0;
         private static object partidasLock = new object();
         private static int partidaKop = 0;
-        private static bool jokoaDago = false;
-
         private static Partida CrearPartida(string codigo = null)
         {
             lock (partidasLock)
@@ -678,7 +676,7 @@ namespace Zerbitzaria
                         catch { }
                     }
                     partidas.Remove(partida.PartidaId);
-                    Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin. Partida amaitu egingo da.");
+                    Console.WriteLine($"[Partida {partida.PartidaId}] Konektio errorea jokalariarekin. Partida amaitu egingo da." + e);
                 }
                     partida.CountJuego = 0;
                     goto CheckBukatu;
@@ -765,8 +763,6 @@ namespace Zerbitzaria
                 partida.CountJuego = 0;
 
                 // ✅ Para PARES y JUEGO, primero verificar quién tiene juego válido
-                if (!jokoaDago)
-                {
                     if (jokua == "PARES" || jokua == "JUEGO")
                     {
                         e1 = jokalariarenErabakia(jokalaria, jokua, partida);
@@ -801,8 +797,6 @@ namespace Zerbitzaria
                         mezua = $"{etsai2.Id};{etsai2.PlayerZnb};{e4}";
                         mezuaJokalariguztientzat(partida, mezua, jokua);
                     }
-                    jokoaDago = true;
-                }
 
                 // ✅ JOKALARIA - Solo preguntar si tiene juego o si es GRANDES/PEQUEÑAS/PUNTO
                 if (jokua == "PARES" || jokua == "JUEGO")
