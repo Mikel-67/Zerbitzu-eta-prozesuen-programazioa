@@ -1057,6 +1057,8 @@ namespace Zerbitzaria
                                 b.PlayerWriter.WriteLine("LABURPENA:" + jokua + "," + totala + ",1");
                             }
 
+                            talde1PasoKop = 0;
+
                             partida.Talde2Puntuak += talde1EnvidoKop > 0 ? totala - azkenEnvido : 1;
                         }
                         else
@@ -1164,6 +1166,9 @@ namespace Zerbitzaria
                             {
                                 b.PlayerWriter.WriteLine("LABURPENA:" + jokua + "," + totala + ",2");
                             }
+
+                            talde2PasoKop = 0;
+
                             partida.Talde1Puntuak += talde2EnvidoKop > 0 ? totala - azkenEnvido : 1;
                         }
                         else
