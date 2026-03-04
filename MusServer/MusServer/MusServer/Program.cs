@@ -621,7 +621,6 @@ namespace Zerbitzaria
                         b.PlayerWriter.WriteLine("RONDA:PAREAK");
                         b.PlayerWriter.Flush();
                     }
-                    Thread.Sleep(3000);
 
                     EnvidoKudeaketa(jokalaria, taldekidea, lehenEtsai, bigarrenEtsai, "PARES", partida);
 
@@ -796,7 +795,8 @@ namespace Zerbitzaria
                         }
                         mezua = $"{etsai2.Id};{etsai2.PlayerZnb};{e4}";
                         mezuaJokalariguztientzat(partida, mezua, jokua);
-                    }
+                    Thread.Sleep(3000);
+                }
 
                 // ✅ JOKALARIA - Solo preguntar si tiene juego o si es GRANDES/PEQUEÑAS/PUNTO
                 if (jokua == "PARES" || jokua == "JUEGO")
